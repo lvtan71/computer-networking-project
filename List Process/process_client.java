@@ -1,11 +1,10 @@
-import java.io.ObjectOutputStream;
-import java.lang.Process;
-import java.io.OutputStream;
-import java.io.ByteArrayOutputStream;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import java.net.InetAddress;
+import java.io.InputStream;
 
 public class process_client {
+
     public static void main(String[] args){
         try {
             // Tao doi tuong socket
@@ -14,26 +13,23 @@ public class process_client {
             // Hien thi da ket noi den server
             System.out.println("Connected");
 
-            // Lay danh sach chuong trinh luu vao doi tuong process
-            Process process = Runtime.getRuntime().exec(System.getenv("windir") + "\\system32\\" + "tasklist.exe");
+            InputStream is = sock.getInputStream();
 
             byte [] buffer = new byte[1024];
-
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-
-            ObjectOutputStream oos = new ObjectOutputStream(bos);
-
-            oos.writeObject(process);
-
-            buffer = bos.toByteArray();
-
-            OutputStream os = sock.getOutputStream();
-
-            os.write(buffer);
+            // Doc byte vao buffer
+           
+            is.read(buffer);
+            String line = new String(buffer, StandardCharsets.UTF_8);
+            int a = 0;
+            while(a != -1){
+                System.out.println(line.trim());
+                a = is.read(buffer);
+                line = new String(buffer, StandardCharsets.UTF_8);
+            }
             
-            System.out.println("Disconnected");
-
             sock.close();
+
+            System.out.println("Disconnected");
 
         } catch (Exception e) {
             e.printStackTrace();

@@ -1,12 +1,11 @@
-import java.io.ObjectInputStream;
 import java.lang.Process;
-import java.net.Socket;
-import java.net.ServerSocket;
-import java.net.InetAddress;
-import java.io.InputStream;
-import java.io.ByteArrayInputStream;
+import java.io.OutputStream;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.net.Socket;
+import java.nio.charset.StandardCharsets;
+import java.net.InetAddress;
+import java.net.ServerSocket;
 
 public class process_server {
     public static void main(String[] args){
@@ -19,31 +18,34 @@ public class process_server {
 
             Socket clSock = svSocket.accept();
 
-            InputStream is = clSock.getInputStream();
+            System.out.println("Connected");
 
-            byte [] buffer = new byte[1024];
-            // Doc byte vao buffer
-            is.read(buffer);
-            // Dua mang byte vao buffer
-            ByteArrayInputStream bInputStream = new ByteArrayInputStream(buffer);
-            // Dua buffer ve doi tuong
-            ObjectInputStream oInputStream = new ObjectInputStream(bInputStream);
-
-            Process process = (Process) oInputStream.readObject();
+            // Lay danh sach chuong trinh luu vao doi tuong process
+            Process process = Runtime.getRuntime().exec(System.getenv("windir") + "\\system32\\" + "tasklist.exe");
 
             String line;
 
             BufferedReader processReader =  new BufferedReader(new InputStreamReader(process.getInputStream()));
-            // Read from BufferedReader
-            while ((line = processReader.readLine()) != null) { // readline: hàm đọc buffer
-                System.out.println(line); // <-- Print all Process here line
-                                                // by line
+           
+            OutputStream os = clSock.getOutputStream();
+
+            byte [] buffer = new byte[1024];
+
+            while((line = processReader.readLine()) != null){
+                System.out.println(); // Debug hệ tâm linh, không hiểu sao in 2 dòng (bất kỳ) xuống dòng thì bên server 
+                System.out.println(); // không lỗi in thêm dòng thừa
+                buffer = line.getBytes(StandardCharsets.UTF_8);
+                os.write(buffer);
             }
-            System.out.println("Disconnected");
             processReader.close();
+            // Flag da liet ke het process
+
             clSock.close();
+
             svSocket.close();
-            
+
+            System.out.println("Disconnected");
+
         } catch (Exception e) {
             e.printStackTrace();
         }
