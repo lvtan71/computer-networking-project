@@ -21,7 +21,6 @@ public class Home extends JFrame
 {
     public Home() {
         initComponents();
-        setVisible(true);
         cardLayout = (CardLayout)(mainPanel.getLayout());
     }
 
