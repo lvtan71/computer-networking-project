@@ -1,0 +1,3 @@
+[ZoneTransfer]
+ZoneId=3
+HostUrl=https://objects.githubusercontent.com/github-production-release-asset-2e65be/13220778/13a2fb7e-4f64-4bb9-a9b4-85329e285079?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIWNJYAX4CSVEH53A%2F20221109%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20221109T172744Z&X-Amz-Expires=300&X-Amz-Signature=dbf29b90e80924347f2bfddad9173b490fb0a8cf31d7d7fde3819bf56137d7d1&X-Amz-SignedHeaders=host&actor_id=93256403&key_id=0&repo_id=13220778&response-content-disposition=attachment%3B%20filename%3Djnativehook-2.2.2.jar&response-content-type=application%2Foctet-stream
