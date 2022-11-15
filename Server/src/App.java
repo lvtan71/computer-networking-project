@@ -6,6 +6,6 @@ import model.Server;
 public class App {
     public static void main(String[] args) {
         Server server = new Server(9999, 5);
-        System.out.println("OK");
+        System.out.println(server.getState());
     }
 }
