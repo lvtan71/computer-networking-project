@@ -5,7 +5,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
-import javax.swing.RepaintManager;
 
 public class kill_process_server {
     public static void main(String[] args){
@@ -26,19 +25,18 @@ public class kill_process_server {
 
             is.read(buffer);
 
-            String processname = new String(buffer, StandardCharsets.UTF_8);
+            String processID = new String(buffer, StandardCharsets.UTF_8);
             
             // Vi mang byte co 100 phan tu ma processname chi can nhung ki tu ten chuong trinh, ton tai nhung khoang trong
-            // can phai loai bo
-            String removeEmpty = processname.replaceAll("\u0000.*", "");
+            // can phai loai bocd 
+            String removeEmpty = processID.replaceAll("\u0000.*", "");
 
             System.out.println("Process need to kill: " + removeEmpty);
 
             Runtime process = Runtime.getRuntime();
 
-            process.exec("taskkill /F /IM " + removeEmpty + ".exe");
-            
-
+            process.exec("taskkill /PID " + removeEmpty);
+        
             svsock.close();
             clSocket.close();
         } catch (IOException ioe) {

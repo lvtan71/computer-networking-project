@@ -1,7 +1,4 @@
-package controller;
-
-import java.io.*;
-import java.net.*;
+package presenter;
 
 import model.Server;
 import view.Terminal;
