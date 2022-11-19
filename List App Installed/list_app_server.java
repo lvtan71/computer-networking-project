@@ -61,6 +61,10 @@ public class list_app_server {
                 System.out.println();
                 //bw.write(line);
                 //bw.newLine();
+                line = line.replace('\\', '/');
+                line = line.replace("\"", "");
+                line = line.replaceAll(",0", "");
+                line = line.replaceAll(",-101", "");
                 buffer = line.getBytes(StandardCharsets.UTF_8);
                 os.write(buffer);
             }
@@ -68,7 +72,6 @@ public class list_app_server {
             stdout.close();
             clSocket.close();
             svSocket.close();
-            
             System.out.println("Disconnected");
         } catch (Exception e) {
             e.printStackTrace();
