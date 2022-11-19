@@ -15,7 +15,10 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import view.card.Application;
 import view.card.Keylogger;
+import view.card.Process;
+import view.card.ScreenShot;
 
 public class Home extends JFrame
 {
@@ -33,21 +36,21 @@ public class Home extends JFrame
         screenButton = new JButton();
         mainPanel = new JPanel();
         logButton = new JButton();
-        appPanel = new JPanel();
-        processPanel = new JPanel();
-        screenPanel = new JPanel();
+        appPanel = new Application();
+        processPanel = new Process();
+        screenPanel = new ScreenShot();
         logPanel = new Keylogger();
 
         setAutoRequestFocus(false);
         setBackground(new Color(255, 255, 255));
-        setPreferredSize(new Dimension(1050, 700));
+        setPreferredSize(new Dimension(1200, 700));
         getContentPane().setLayout(new GridBagLayout());
 
         buttonPanel.setBackground(new Color(41, 50, 65));
         buttonPanel.setForeground(new Color(41, 50, 65));
         buttonPanel.setLayout(new GridBagLayout());
 
-        appButton.setBackground(new Color(41, 50, 65));
+        appButton.setBackground(new Color(53, 79, 82));
         appButton.setFont(new Font("STXihei", 0, 24)); // NOI18N
         appButton.setForeground(new Color(131, 197, 190));
         appButton.setText("Application");
@@ -121,7 +124,6 @@ public class Home extends JFrame
         gBC.gridx = 0;
         gBC.gridy = 3;
         gBC.fill = GridBagConstraints.BOTH;
-        gBC.anchor = GridBagConstraints.NORTHWEST;
         gBC.weightx = 1.0;
         gBC.weighty = 0.2;
         gBC.insets = new Insets(0, 0, 250, 0);
@@ -139,15 +141,12 @@ public class Home extends JFrame
         mainPanel.setLayout(new CardLayout());
 
         // Application Panel
-        appPanel.setBackground(new Color(153, 153, 0));
         mainPanel.add(appPanel, "appCard");
 
         // Process Panel
-        processPanel.setBackground(new Color(204, 51, 0));
         mainPanel.add(processPanel, "processCard");
 
         // Screen Shot Panel
-        screenPanel.setBackground(new Color(51, 102, 255));
         mainPanel.add(screenPanel, "screenCard");
 
         // Keylogger Shot Panel
@@ -164,20 +163,41 @@ public class Home extends JFrame
         pack();
     }
 
+    private void changeStateBackground(JButton button)
+    {
+        button.setBackground(new Color(41, 50, 65));
+    }
+
     private void appButtonActionPerformed(ActionEvent evt) {
         cardLayout.show(mainPanel, "appCard");
+        appButton.setBackground(new Color(53, 79, 82));
+        changeStateBackground(processButton);
+        changeStateBackground(screenButton);
+        changeStateBackground(logButton);
     }
 
     private void processButtonActionPerformed(ActionEvent evt) {
         cardLayout.show(mainPanel, "processCard");
+        processButton.setBackground(new Color(53, 79, 82));
+        changeStateBackground(appButton);
+        changeStateBackground(screenButton);
+        changeStateBackground(logButton);
     }
 
     private void screenButtonActionPerformed(ActionEvent evt) {
         cardLayout.show(mainPanel, "screenCard");
+        screenButton.setBackground(new Color(53, 79, 82));
+        changeStateBackground(appButton);
+        changeStateBackground(processButton);
+        changeStateBackground(logButton);
     }
 
     private void logButtonActionPerformed(ActionEvent evt) {
         cardLayout.show(mainPanel, "logCard");
+        logButton.setBackground(new Color(53, 79, 82));
+        changeStateBackground(appButton);
+        changeStateBackground(processButton);
+        changeStateBackground(screenButton);
     }
 
     public Keylogger getLogPanel() {
@@ -188,22 +208,40 @@ public class Home extends JFrame
         return logButton;
     }
 
+    public Application getAppPanel() {
+        return appPanel;
+    }
+
+    public JButton getScreenButton() {
+        return screenButton;
+    }
+
+    public ScreenShot getScreenPanel() {
+        return screenPanel;
+    }
+
+    public Process getProcessPanel() {
+        return processPanel;
+    }
+
     private CardLayout cardLayout;
 
     // Variables declaration - do not modify
     private JButton appButton;
-    private JPanel appPanel;
+    private Application appPanel;
     private JPanel buttonPanel;
     private JPanel mainPanel;
     private JButton processButton;
-    private JPanel processPanel;
+    private Process processPanel;
     private JButton screenButton;
-    private JPanel screenPanel;
+    private ScreenShot screenPanel;
     private JButton logButton;
     private Keylogger logPanel;
-
+    private Boolean[] activeButton = {true, false, false, false};
+    private int clickedProcessID;
     public static void main(String[] args)
     {
-        new Home();
+        Home a = new Home();
+        a.setVisible(true);
     }
 }

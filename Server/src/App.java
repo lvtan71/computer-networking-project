@@ -1,9 +1,3 @@
-import java.io.*;
-import java.net.*;
-
-import com.github.kwhat.jnativehook.NativeHookException;
-import com.github.kwhat.jnativehook.GlobalScreen;
-
 import model.Server;
 import view.Terminal;
 import controller.Controller;

