@@ -46,11 +46,20 @@ public class Controller
             case "Print":
                 client.handleAction(action);
                 break;
+            case "ListProcess":
+                client.handleAction(action);
+                break;
+            case "StopProcess":
+            case "StartProcess":
         }
     }
 
     public void handleReturnedValue(String action, String out) {
         home.getLogPanel().getKeyTextArea().setText(out);
+    }
+
+    public void handleReturnedValue(String action, ArrayList<ArrayList<String>> out) {
+        home.getProcessPanel().updateProcessTable(out);
     }
 
     public void handleReturnedValue(String action, BufferedImage out) {

