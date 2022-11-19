@@ -8,7 +8,7 @@ import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
 public class stop_app_server {
-    public static void main(String[] args){
+    public static  void main(String[] args){
         try {
             // Create Socket
             ServerSocket svSock = new ServerSocket(9999,5,InetAddress.getLocalHost());
@@ -17,8 +17,14 @@ public class stop_app_server {
             Socket clSocket = svSock.accept();
             System.out.println("Connected");
 
-            stopApp(clSocket);
+            InputStream is = clSocket.getInputStream();
+            OutputStream os = clSocket.getOutputStream();
 
+
+            stopApp(is, os);
+
+            is.close();
+            os.close();
             clSocket.close();
             svSock.close();
         } catch (Exception e) {
@@ -26,10 +32,9 @@ public class stop_app_server {
         }
     }
 
-    public static void stopApp(Socket clSocket){
+    public static void stopApp(InputStream is, OutputStream os){
         try {
             // Stop App
-            InputStream is = clSocket.getInputStream();
             byte [] BufferedReader = new byte[1024];
 
             is.read(BufferedReader);
@@ -39,18 +44,16 @@ public class stop_app_server {
 
             if(isRunning(appID)){
                 Runtime appRuntime = Runtime.getRuntime();
-                appRuntime.exec("taskkill /PID " + appID.trim());
-                String notice = "App" + appID.trim() + " has been stopped";
+                appRuntime.exec("taskkill /F /PID " + appID.trim());
+                String notice = "App with ID" + appID.trim() + " has been stopped";
                 System.out.println(notice);
-                response(clSocket, notice);
+                response(os, notice);
             }
             else{
                 String notice = "There is no App with ID " + appID + " is running";
                 System.out.println(notice);
-                response(clSocket, notice);
+                response(os, notice);
             }
-
-            is.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -76,20 +79,17 @@ public class stop_app_server {
         return false;
     }
 
-    public static void response(Socket clSocket, String res){
+    public static void response(OutputStream os, String res){
         try {
-            OutputStream os = clSocket.getOutputStream();
-
             byte [] buffer = new byte[1024];
 
             buffer = res.getBytes(StandardCharsets.UTF_8);
 
             os.write(buffer);
-
-            os.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
         
     }
 }
+// Khai bao private cac bien input output - stream

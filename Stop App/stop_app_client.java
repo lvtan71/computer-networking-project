@@ -13,16 +13,21 @@ public class stop_app_client {
             Socket sock = new Socket(InetAddress.getLocalHost(),9999);
             System.out.println("Connected");
 
-            stopApp(sock);
+            OutputStream os = sock.getOutputStream();
+            InputStream is = sock.getInputStream();
 
-            //Socket socket = new Socket(InetAddress.getLocalHost(), 9999);
-            receiveStatus(sock);
+            stopApp(os);
 
+            receiveStatus(is);
+
+            os.close();
+            is.close();
+            sock.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    public static void stopApp(Socket sock){
+    public static void stopApp(OutputStream os){
         try {
             // Stop App
             System.out.print("Input ID of the App need to stop: ");
@@ -31,25 +36,19 @@ public class stop_app_client {
             String appID = "";
             appID = input.nextLine();
 
-            OutputStream os = sock.getOutputStream();
-
             byte [] BufferedWriter  = appID.getBytes(StandardCharsets.UTF_8);
 
             os.write(BufferedWriter);
   
             input.close();
 
-            os.close();
-            
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public static void receiveStatus(Socket sock){
+    public static void receiveStatus(InputStream is){
         try {
-            InputStream is = sock.getInputStream();
-
             byte [] buffer = new byte[1024];
 
             is.read(buffer);
@@ -58,7 +57,6 @@ public class stop_app_client {
 
             System.out.println(status.trim());
 
-            is.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
