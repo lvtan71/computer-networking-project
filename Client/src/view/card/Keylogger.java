@@ -83,16 +83,18 @@ public class Keylogger extends JPanel {
         keyTextArea.setColumns(20);
         keyTextArea.setRows(5);
         keyTextArea.setFont(new java.awt.Font("STXihei", 0, 18)); // NOI18N
+        keyTextArea.setLineWrap(true);
+        keyTextArea.setWrapStyleWord(true);
+        keyTextArea.setEditable(false);
         keyScrollPane.setViewportView(keyTextArea);
 
         gBC = new java.awt.GridBagConstraints();
         gBC.gridx = 0;
         gBC.gridy = 0;
         gBC.fill = java.awt.GridBagConstraints.BOTH;
-        gBC.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gBC.weightx = 1;
         gBC.weighty = 1;
-        gBC.insets = new java.awt.Insets(0, 30, 20, 30);
+        gBC.insets = new java.awt.Insets(0, 0, 0, 0);
         keyPanel.add(keyScrollPane, gBC);
 
         gBC = new java.awt.GridBagConstraints();
