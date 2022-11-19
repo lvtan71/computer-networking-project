@@ -35,7 +35,7 @@ public class kill_process_server {
 
             Runtime process = Runtime.getRuntime();
 
-            process.exec("taskkill /PID " + removeEmpty);
+            process.exec("taskkill /F /PID " + removeEmpty);
         
             svsock.close();
             clSocket.close();
