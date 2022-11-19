@@ -4,9 +4,9 @@ import model.Client;
 import view.Login;
 import view.Home;
 
-public class Controller
+public class Presenter
 {
-    public Controller(Login login, Home home, Client client)
+    public Presenter(Login login, Home home, Client client)
     {
         initComponents(login, home, client);
     }

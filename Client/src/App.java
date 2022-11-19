@@ -1,7 +1,7 @@
 import view.Login;
 import view.Home;
 import model.Client;
-import controller.Controller;
+import presenter.Presenter;
 
 public class App {
     public static void main(String[] args)
@@ -10,7 +10,7 @@ public class App {
         Home home = new Home();
         Client client = new Client();
 
-        Controller controller = new Controller(login, home, client);
-        controller.initController();
+        Presenter presenter = new Presenter(login, home, client);
+        presenter.initController();
     }
 }
