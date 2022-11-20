@@ -19,11 +19,11 @@ public class Process {
         this.sock = sock;
         this.inputStream = inputStream;
         this.outputStream = outputStream;
-        infoProcess = new ArrayList<>();
     }
 
     public ArrayList<ArrayList<String>> listProcess()
     {
+        infoProcess = new ArrayList<>();
         try {
             sock.setSoTimeout(400);
             byte[] buffer = new byte[1024];
@@ -34,13 +34,11 @@ public class Process {
                 infoLine = new String(buffer, StandardCharsets.UTF_8);
                 infoLine = infoLine.trim();
 
-                ArrayList<String> tempArray = new ArrayList<String>();
-                tempArray.add("  " + infoLine.substring(0, 28).trim());
+                ArrayList<String> tempArray = new ArrayList<>();
+                tempArray.add("   " + infoLine.substring(0, 28).trim());
                 tempArray.add("  " + infoLine.substring(28, 34).trim());
                 tempArray.add("  " + infoLine.substring(34, 50).trim());
                 tempArray.add("  " + infoLine.substring(68, 76).trim());
-
-                System.out.println(infoLine);
 
                 infoProcess.add(tempArray);
             }

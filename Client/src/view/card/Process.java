@@ -130,9 +130,9 @@ public class Process extends JPanel {
         processListTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
-                clickedProcessID = processListTable.getValueAt(processListTable.getSelectedRow(), 1).toString();
-
-                System.out.println(clickedProcessID);
+                    clickedProcessID = processListTable.getValueAt(processListTable.getSelectedRow(), 1).toString();
+                    clickedProcessName = processListTable.getValueAt(processListTable.getSelectedRow(), 0).toString();
+                    System.out.println(clickedProcessID);
             }
         });
         processScrollPanel.setViewportView(processListTable);
@@ -165,6 +165,7 @@ public class Process extends JPanel {
     {
         String[][] infoProcessArray = infoProcess.stream().map(u -> u.toArray(new String[0])).toArray(String[][]::new);
 
+        processListTable.repaint();
         processListTable.setModel(new DefaultTableModel(infoProcessArray, headerProcess));
         if (processListTable.getColumnModel().getColumnCount() > 0) {
             processListTable.getColumnModel().getColumn(0).setPreferredWidth(400);
@@ -178,12 +179,20 @@ public class Process extends JPanel {
         return clickedProcessID;
     }
 
+    public JPanel getProcessListPanel() {
+        return processListPanel;
+    }
+
     public JButton getListButton() {
         return listButton;
     }
 
     public JButton getStartButton() {
         return startButton;
+    }
+
+    public String getClickedProcessName() {
+        return clickedProcessName;
     }
 
     public JButton getStopButton() {
@@ -199,4 +208,5 @@ public class Process extends JPanel {
     private JTable processListTable;
     private String[] headerProcess = {"Process", "ID", "Session", "Mem Usage"};
     private String clickedProcessID;
+    private String clickedProcessName;
 }

