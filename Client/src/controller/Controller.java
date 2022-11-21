@@ -34,7 +34,7 @@ public class Controller
 
         home.getProcessPanel().getStartButton().addActionListener(e -> handleProcess("StartProcess"));
         home.getProcessPanel().getStopButton().addActionListener(e -> handleProcess("StopProcess"));
-        home.getProcessPanel().getListButton().addActionListener(e -> handleProcess("ListProcess"));
+        home.getProcessPanel().getListButton().addActionListener(e -> handleAction("ListProcess"));
 
         home.getAppPanel().getListButton().addActionListener(e -> handleApp("ListApp"));
     }
