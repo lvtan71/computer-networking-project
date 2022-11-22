@@ -32,6 +32,7 @@ public class Client
             inputStream = sock.getInputStream();
             outputStream = sock.getOutputStream();
             process = new Process(sock, inputStream, outputStream);
+            application = new Application(sock,inputStream,outputStream);
         }
         catch (Exception e)
         {
@@ -115,36 +116,38 @@ public class Client
         return process;
     }
 
-    public void handleApp(String command)
-    {
-        try
-        {
-            sock.setSoTimeout(1500);
-            byte[] msg = command.getBytes();
-            outputStream.write(msg);
+    public Application getApplication(){return application;}
 
-            if (command.equals("ListApp"))
-            {
-                byte[] buffer = new byte[1024];
-                inputStream.read(buffer);
-                String infoLine = new String(buffer, StandardCharsets.UTF_8);
-                System.out.println("vcvc");
-                while (true)
-                {
-                    inputStream.read(buffer);
-                    infoLine = new String(buffer, StandardCharsets.UTF_8);
-                    infoLine = infoLine.trim();
-
-                    ArrayList<String> tempArray = new ArrayList<>();
-                    System.out.println(infoLine);
-                }
-            }
-        }
-        catch (IOException ioE)
-        {
-            //
-        }
-    }
+//    public void handleApp(String command)
+//    {
+//        try
+//        {
+//            sock.setSoTimeout(1500);
+//            byte[] msg = command.getBytes();
+//            outputStream.write(msg);
+//
+//            if (command.equals("ListApp"))
+//            {
+//                byte[] buffer = new byte[1024];
+//                inputStream.read(buffer);
+//                String infoLine = new String(buffer, StandardCharsets.UTF_8);
+//                System.out.println("vcvc");
+//                while (true)
+//                {
+//                    inputStream.read(buffer);
+//                    infoLine = new String(buffer, StandardCharsets.UTF_8);
+//                    infoLine = infoLine.trim();
+//
+//                    ArrayList<String> tempArray = new ArrayList<>();
+//                    System.out.println(infoLine);
+//                }
+//            }
+//        }
+//        catch (IOException ioE)
+//        {
+//            //
+//        }
+//    }
 
     public void sendCommand(String command)
     {
@@ -165,4 +168,5 @@ public class Client
     private InputStream inputStream;
     private OutputStream outputStream;
     private Process process;
+    private Application application;
 }
