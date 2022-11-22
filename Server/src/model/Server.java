@@ -89,7 +89,10 @@ public class Server {
                             break;
                         }
 
-                        case ("ListApp"):
+                        case ("AppInstalled"):
+                        case("AppRunning"):
+                        case("StopApp"):
+                        case("StartApp"):
                         {
                             handleApp(action);
                             break;
@@ -115,37 +118,24 @@ public class Server {
     private void handleApp(String action)
     {
         notifyController(action);
-        String dir1 = "HKLM:/Software/Microsoft/Windows/CurrentVersion/Uninstall/*";
-        String dir2 = "HKCU:/Software/Microsoft/Windows/CurrentVersion/Uninstall/*";
-        String dir3 = "HKLM:/Software/Wow6432Node/Microsoft/Windows/CurrentVersion/Uninstall/*";
-        // Thư mục này máy có máy không
-        String dir4 = "HKCU:/Software/Wow6432Node/Microsoft/Windows/CurrentVersion/Uninstall/*";
-        // Bỏ câu lệnh sau dấu | để thấy nhiều trường tùy chọn hơn, sau đó thêm sau Selec-object để chọn hiện thị các trường đó
-        String custom = "|Select-Object DisplayName, DisplayIcon  |Where-Object SystemComponent -ne 1|Format-Table";
-        // Gồm cả những App hệ thống
-        String command = "powershell.exe -command \" Get-ItemProperty " + dir1 + "," + dir2 + "," + dir3 + " -ErrorAction SilentlyContinue" + custom + "\"";
-        String diffCommand = "powershell.exe -command \"$table = foreach ($UKey in 'HKLM:/SOFTWARE/Microsoft/Windows/CurrentVersion/Uninstall/*','HKLM:/SOFTWARE/Wow6432node/Microsoft/Windows/CurrentVersion/Uninstall/*','HKCU:SOFTWARE/Microsoft/Windows/CurrentVersion/Uninstall/*','HKCU:/SOFTWARE/Wow6432node/Microsoft/Windows/CurrentVersion/Uninstall/*'){foreach ($Product in (Get-ItemProperty $UKey -ErrorAction SilentlyContinue)){if($Product.DisplayName -and $Product.SystemComponent -ne 1){new-object psobject -Property @{Name = $Product.DisplayName; Location = $Product.DisplayIcon}}}} $table | Out-String -Width 4096 | Format-Table -Autosize\"";
 
-        try
-        {
-            Process powerShellProcess = Runtime.getRuntime().exec(command);
-            String line;
-            byte[] buffer = new byte[1024];
-
-
-            BufferedReader appReader = new BufferedReader(new InputStreamReader(powerShellProcess.getInputStream()));
-
-            while ((line = appReader.readLine()) != null) {
-                System.out.println(line);
-                System.out.println();
-                System.out.println();
-                buffer = line.getBytes(StandardCharsets.UTF_8);
-                outputStream.write(buffer);
+        switch (action){
+            case("AppInstalled"):{
+                application.appInstalled();
+                break;
             }
-        }
-        catch (IOException ioE)
-        {
-            ioE.printStackTrace();
+            case("AppRunning"):{
+                application.appRunning();
+                break;
+            }
+            case("StopApp"):{
+                application.stopApp();
+                break;
+            }
+            case("StartApp"):{
+                application.startApp();
+                break;
+            }
         }
     }
 
@@ -259,4 +249,5 @@ public class Server {
     }
 
     private ProcessModel processModel;
+    private Application application;
 }
