@@ -35,38 +35,31 @@ public class Controller
         home.getProcessPanel().getStopButton().addActionListener(e -> handleProcess("StopProcess"));
         home.getProcessPanel().getListButton().addActionListener(e -> handleProcess("ListProcess"));
 
-        home.getAppPanel().getListButton().addActionListener(e -> handleApp("ListApp"));
-        //////////
-        home.getAppPanel().getListButton().addActionListener(e -> handleApp("RunningApp"));
-        home.getAppPanel().getListButton().addActionListener((e -> handleApp("StopApp")));
-        home.getAppPanel().getListButton().addActionListener(e -> handleApp("StartApp"));
+        home.getAppInstallPanel().getListButton().addActionListener(e -> handleApp("ListAppInstalled"));
+        home.getAppRunningPanel().getListButton().addActionListener(e -> handleApp("ListAppRunning"));
+
     }
-////////////////////////////
+
     private void handleApp(String command)
     {
         client.sendCommand(command);
-        switch (command){
-            case("ListApp"):{
-                ArrayList<ArrayList<String>> appInstalled = client.getApplication().listAppInstalled();
-                //home.getAppPanel()
+        switch (command)
+        {
+            case ("ListAppRunning"):
+            {
+                client.getApplication().listAppRunning();
+                break;
             }
-            case("RunningApp"):{
-                ArrayList<ArrayList<String>> appRunning = client.getApplication().listAppRunning();
-                //home.getAppPanel()
-            }
-            case("StopApp"):{
-                // Thêm Click Stop App
-//                String AppID = home.getAppPanel().getClickAppID();
-//                client.getApplication().stopApp(AppID);
-            }
-            case("StartApp"):{
-                // Thêm Click Start App
-//                String AppLocation = home.getAppPanel().getClickAppLocation();
-//                client.getApplication().startApp(AppLocation);
+
+            case ("ListAppInstalled"):
+            {
+                ArrayList<ArrayList<String>> infoAppInstalled = client.getApplication().listAppInstalled();
+                home.getAppInstallPanel().updateAppInstalledPanel(infoAppInstalled);
+                break;
             }
         }
     }
-///////////////////////////////
+
     private void handleProcess(String command)
     {
         client.sendCommand(command);

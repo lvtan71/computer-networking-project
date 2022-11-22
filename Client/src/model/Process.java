@@ -40,6 +40,8 @@ public class Process {
                 tempArray.add("  " + infoLine.substring(34, 50).trim());
                 tempArray.add("  " + infoLine.substring(68, 76).trim());
 
+                System.out.println(infoLine);
+
                 infoProcess.add(tempArray);
             }
         }

@@ -3,7 +3,6 @@ package model;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.reflect.Array;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -28,25 +27,30 @@ public class Application {
     }
 
     public ArrayList<ArrayList<String>> listAppInstalled() {
+        appInstalled = new ArrayList<>();
         try {
-            sock.setSoTimeout(400);
-            byte[] buffer = new byte[1024];
-            inputStream.read(buffer); // Doc dong dau la cac truong
+            sock.setSoTimeout(3000);
             String line;
-            while(true){
+
+            byte[] buffer = new byte[1024];
+            while(true)
+            {
                 inputStream.read(buffer);
                 line = new String(buffer, StandardCharsets.UTF_8);
                 line = line.trim();
 
                 ArrayList<String> row = new ArrayList<String>();
                 row.add("  " + line.substring(0,66).trim());
-                row.add("  " + line.substring(66,200).trim());
+                row.add("  " + line.substring(66).trim());
 
                 appInstalled.add(row);
             }
-        }catch (IOException ioException){
-
         }
+        catch (IOException ioE)
+        {
+            ioE.printStackTrace();
+        }
+
         return appInstalled;
     }
 
@@ -66,6 +70,7 @@ public class Application {
                 row.add("  " + line.substring(21,26).trim());
                 row.add("  " + line.substring(26,100).trim());
 
+                System.out.println(line);
                 appRunning.add(row);
             }
         }catch (IOException ioException){

@@ -5,10 +5,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import view.card.Application;
-import view.card.Keylogger;
+import view.card.*;
 import view.card.Process;
-import view.card.ScreenShot;
 
 public class Home extends JFrame
 {
@@ -21,12 +19,14 @@ public class Home extends JFrame
         GridBagConstraints gBC;
 
         buttonPanel = new JPanel();
-        appButton = new JButton();
+        appInstallButton = new JButton();
+        appRunningButton = new JButton();
         processButton = new JButton();
         screenButton = new JButton();
         mainPanel = new JPanel();
         logButton = new JButton();
-        appPanel = new Application();
+        appInstallPanel = new ApplicationInstalled();
+        appRunningPanel = new ApplicationRunning();
         processPanel = new Process();
         screenPanel = new ScreenShot();
         logPanel = new Keylogger();
@@ -40,14 +40,14 @@ public class Home extends JFrame
         buttonPanel.setForeground(new Color(41, 50, 65));
         buttonPanel.setLayout(new GridBagLayout());
 
-        appButton.setBackground(new Color(53, 79, 82));
-        appButton.setFont(new Font("STXihei", 0, 24)); // NOI18N
-        appButton.setForeground(new Color(131, 197, 190));
-        appButton.setText("Application");
-        appButton.setBorder(null);
-        appButton.addActionListener(new ActionListener() {
+        appRunningButton.setBackground(new Color(53, 79, 82));
+        appRunningButton.setFont(new Font("STXihei", 0, 24)); // NOI18N
+        appRunningButton.setForeground(new Color(131, 197, 190));
+        appRunningButton.setText("<html>App Running</html>");
+        appRunningButton.setBorder(null);
+        appRunningButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                appButtonActionPerformed(evt);
+                appRunningButtonActionPerformed(evt);
             }
         });
         gBC = new GridBagConstraints();
@@ -58,7 +58,27 @@ public class Home extends JFrame
         gBC.weightx = 1.0;
         gBC.weighty = 0.2;
         gBC.insets = new Insets(50, 0, 0, 0);
-        buttonPanel.add(appButton, gBC);
+        buttonPanel.add(appRunningButton, gBC);
+
+        appInstallButton.setBackground(new Color(41, 50, 65));
+        appInstallButton.setFont(new Font("STXihei", 0, 24)); // NOI18N
+        appInstallButton.setForeground(new Color(131, 197, 190));
+        appInstallButton.setText("<html>App Installed</html>");
+        appInstallButton.setBorder(null);
+        appInstallButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                appInstallButtonActionPerformed(evt);
+            }
+        });
+        gBC = new GridBagConstraints();
+        gBC.gridx = 0;
+        gBC.gridy = 1;
+        gBC.fill = GridBagConstraints.BOTH;
+        gBC.anchor = GridBagConstraints.NORTHWEST;
+        gBC.weightx = 1.0;
+        gBC.weighty = 0.2;
+        gBC.insets = new Insets(0, 0, 0, 0);
+        buttonPanel.add(appInstallButton, gBC);
 
         processButton.setBackground(new Color(41, 50, 65));
         processButton.setFont(new Font("STXihei", 0, 24)); // NOI18N
@@ -72,12 +92,13 @@ public class Home extends JFrame
         });
         gBC = new GridBagConstraints();
         gBC.gridx = 0;
-        gBC.gridy = 1;
+        gBC.gridy = 2;
         gBC.fill = GridBagConstraints.BOTH;
         gBC.weightx = 1.0;
         gBC.weighty = 0.2;
         buttonPanel.add(processButton, gBC);
 
+        // Screenshot Button
         screenButton.setBackground(new Color(41, 50, 65));
         screenButton.setFont(new Font("STXihei", 0, 24)); // NOI18N
         screenButton.setForeground(new Color(131, 197, 190));
@@ -90,7 +111,7 @@ public class Home extends JFrame
         });
         gBC = new GridBagConstraints();
         gBC.gridx = 0;
-        gBC.gridy = 2;
+        gBC.gridy = 3;
         gBC.fill = GridBagConstraints.BOTH;
         gBC.anchor = GridBagConstraints.NORTHWEST;
         gBC.weightx = 1.0;
@@ -112,11 +133,11 @@ public class Home extends JFrame
 
         gBC = new GridBagConstraints();
         gBC.gridx = 0;
-        gBC.gridy = 3;
+        gBC.gridy = 4;
         gBC.fill = GridBagConstraints.BOTH;
         gBC.weightx = 1.0;
         gBC.weighty = 0.2;
-        gBC.insets = new Insets(0, 0, 250, 0);
+        gBC.insets = new Insets(0, 0, 150, 0);
         buttonPanel.add(logButton, gBC);
 
         // Button Panel
@@ -130,8 +151,11 @@ public class Home extends JFrame
 
         mainPanel.setLayout(new CardLayout());
 
-        // Application Panel
-        mainPanel.add(appPanel, "appCard");
+        // Application Running Panel
+        mainPanel.add(appInstallPanel, "appInstallCard");
+
+        // Application Install Panel
+        mainPanel.add(appRunningPanel, "appRunningCard");
 
         // Process Panel
         mainPanel.add(processPanel, "processCard");
@@ -141,6 +165,8 @@ public class Home extends JFrame
 
         // Keylogger Shot Panel
         mainPanel.add(logPanel, "logCard");
+
+
 
         gBC = new GridBagConstraints();
         gBC.gridx = 1;
@@ -158,56 +184,68 @@ public class Home extends JFrame
         button.setBackground(new Color(41, 50, 65));
     }
 
-    private void appButtonActionPerformed(ActionEvent evt) {
-        cardLayout.show(mainPanel, "appCard");
-        appButton.setBackground(new Color(53, 79, 82));
+    private void appRunningButtonActionPerformed(ActionEvent evt) {
+        cardLayout.show(mainPanel, "appRunningCard");
+        appInstallButton.setBackground(new Color(53, 79, 82));
         changeStateBackground(processButton);
         changeStateBackground(screenButton);
         changeStateBackground(logButton);
+        changeStateBackground(appInstallButton);
+    }
+
+    private void appInstallButtonActionPerformed(ActionEvent evt) {
+        cardLayout.show(mainPanel, "appInstallCard");
+        appInstallButton.setBackground(new Color(53, 79, 82));
+        changeStateBackground(processButton);
+        changeStateBackground(screenButton);
+        changeStateBackground(logButton);
+        changeStateBackground(appRunningButton);
     }
 
     private void processButtonActionPerformed(ActionEvent evt) {
         cardLayout.show(mainPanel, "processCard");
         processButton.setBackground(new Color(53, 79, 82));
-        changeStateBackground(appButton);
+        changeStateBackground(appInstallButton);
         changeStateBackground(screenButton);
         changeStateBackground(logButton);
+        changeStateBackground(appRunningButton);
     }
 
     private void screenButtonActionPerformed(ActionEvent evt) {
         cardLayout.show(mainPanel, "screenCard");
         screenButton.setBackground(new Color(53, 79, 82));
-        changeStateBackground(appButton);
+        changeStateBackground(appInstallButton);
         changeStateBackground(processButton);
         changeStateBackground(logButton);
+        changeStateBackground(appRunningButton);
     }
 
     private void logButtonActionPerformed(ActionEvent evt) {
         cardLayout.show(mainPanel, "logCard");
         logButton.setBackground(new Color(53, 79, 82));
-        changeStateBackground(appButton);
+        changeStateBackground(appInstallButton);
         changeStateBackground(processButton);
         changeStateBackground(screenButton);
-    }
-
-    public Keylogger getLogPanel() {
-        return logPanel;
-    }
-
-    public JButton getLogButton() {
-        return logButton;
-    }
-
-    public Application getAppPanel() {
-        return appPanel;
     }
 
     public JButton getScreenButton() {
         return screenButton;
     }
 
+    public ApplicationInstalled getAppInstallPanel() {
+        return appInstallPanel;
+    }
+
+    public ApplicationRunning getAppRunningPanel() {
+        return appRunningPanel;
+    }
+
     public ScreenShot getScreenPanel() {
         return screenPanel;
+    }
+
+    public Keylogger getLogPanel() {
+        return logPanel;
     }
 
     public Process getProcessPanel() {
@@ -240,8 +278,10 @@ public class Home extends JFrame
     private CardLayout cardLayout;
 
     // Variables declaration - do not modify
-    private JButton appButton;
-    private Application appPanel;
+    private JButton appInstallButton;
+    private JButton appRunningButton;
+    private ApplicationInstalled appInstallPanel;
+    private ApplicationRunning appRunningPanel;
     private JPanel buttonPanel;
     private JPanel mainPanel;
     private JButton processButton;
