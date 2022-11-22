@@ -55,11 +55,13 @@ public class ProcessModel {
             if(isRunning(IDProcess)){
                 Runtime appRuntime = Runtime.getRuntime();
                 appRuntime.exec("taskkill /PID " + IDProcess.trim());
-                notifyStopProcess = "App" + IDProcess.trim() + " has been stopped";
+                notifyStopProcess = "1";
+//                notifyStopProcess = "App" + IDProcess.trim() + " has been stopped";
                 System.out.println(notifyStopProcess);
             }
             else{
-                notifyStopProcess = "There is no App with ID " + IDProcess + " is running";
+                notifyStopProcess = "0";
+//                notifyStopProcess = "There is no App with ID " + IDProcess + " is running";
                 System.out.println(notifyStopProcess);
             }
 

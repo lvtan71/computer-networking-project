@@ -4,6 +4,8 @@ import java.awt.*;
 import javax.swing.*;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class Keylogger extends JPanel {
     public Keylogger()
@@ -75,7 +77,7 @@ public class Keylogger extends JPanel {
         gBC.fill = java.awt.GridBagConstraints.BOTH;
         gBC.weightx = 1;
         gBC.weighty = 0.2;
-        gBC.insets = new Insets(0, 40, 0, 175);
+        gBC.insets = new Insets(0, 40, 0, 400);
         add(logButtonPanel, gBC);
 
         keyPanel.setLayout(new java.awt.GridBagLayout());
@@ -122,6 +124,10 @@ public class Keylogger extends JPanel {
         return keyTextArea;
     }
 
+    public void setHook(Boolean hook) {
+        isHook = hook;
+    }
+
     private JButton hookButton;
     private JButton unHookButton;
     private JButton printButton;
@@ -129,4 +135,5 @@ public class Keylogger extends JPanel {
     private JPanel keyPanel;
     private JScrollPane keyScrollPane;
     private JTextArea keyTextArea;
+    private Boolean isHook = false;
 }

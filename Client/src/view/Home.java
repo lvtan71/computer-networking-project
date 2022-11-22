@@ -1,17 +1,7 @@
 package view;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.WindowConstants;
-import javax.swing.JLabel;
-import java.awt.CardLayout;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Insets;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -224,6 +214,29 @@ public class Home extends JFrame
         return processPanel;
     }
 
+    public void notify(String title, String notify)
+    {
+        notifyDialog = new JDialog();
+        notifyLabel = new JLabel();
+
+        notifyDialog.setMinimumSize(new Dimension(320, 150));
+        notifyDialog.setLayout(new GridBagLayout());
+        notifyDialog.setTitle(title);
+        notifyDialog.setLocationRelativeTo(this);
+
+        notifyLabel.setFont(new Font("STXihei", 0, 18)); //
+        notifyLabel.setText(notify);
+        GridBagConstraints gBC = new GridBagConstraints();
+        gBC.gridx = 0;
+        gBC.gridy = 0;
+        notifyDialog.add(notifyLabel);
+
+        notifyDialog.pack();
+        notifyDialog.setVisible(true);
+        notifyDialog.setModal(true);
+    }
+
+
     private CardLayout cardLayout;
 
     // Variables declaration - do not modify
@@ -244,4 +257,7 @@ public class Home extends JFrame
         Home a = new Home();
         a.setVisible(true);
     }
+
+    private JDialog notifyDialog;
+    private JLabel notifyLabel;
 }
