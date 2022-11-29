@@ -25,7 +25,7 @@ public class Client
     {
         try
         {
-            sock = new Socket(InetAddress.getLocalHost(), 9998);
+            sock = new Socket(this.IP, 9998);
 
             inputStream = sock.getInputStream();
             outputStream = sock.getOutputStream();

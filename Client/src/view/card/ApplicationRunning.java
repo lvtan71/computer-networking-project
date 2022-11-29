@@ -67,6 +67,7 @@ public class ApplicationRunning extends JPanel {
 
         appListPanel.setLayout(new GridBagLayout());
 
+        appRunningListTable.setDefaultEditor(Object.class, null);
         appRunningListTable.getTableHeader().setBackground(new Color(40, 50, 65));
         appRunningListTable.getTableHeader().setForeground(new Color(255,255,255));
         appRunningListTable.getTableHeader().setFont(new Font("STXihei", 0, 18));
