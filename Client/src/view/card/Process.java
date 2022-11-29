@@ -21,7 +21,6 @@ public class Process extends JPanel {
         setLayout(new GridBagLayout());
         processButtonPanel = new JPanel();
         listButton = new JButton();
-        startButton = new JButton();
         stopButton = new JButton();
         processListPanel = new JPanel();
         processScrollPanel = new JScrollPane();
@@ -44,18 +43,6 @@ public class Process extends JPanel {
 
         processButtonPanel.add(listButton, gBC);
 
-        startButton.setBackground(new Color(40, 50, 65));
-        startButton.setFont(new Font("STXihei", 0, 22)); // NOI18N
-        startButton.setForeground(new Color(130, 197, 190));
-        startButton.setText("Start");
-        gBC = new GridBagConstraints();
-        gBC.gridx = 1;
-        gBC.gridy = 0;
-        gBC.ipadx = 60;
-        gBC.ipady = 25;
-        gBC.weightx = 0.2;
-        gBC.weighty = 1.0;
-        processButtonPanel.add(startButton, gBC);
 
         stopButton.setBackground(new Color(40, 50, 65));
         stopButton.setFont(new Font("STXihei", -1, 22)); // NOI18N
@@ -77,7 +64,7 @@ public class Process extends JPanel {
         gBC.fill = GridBagConstraints.BOTH;
         gBC.weightx = 1;
         gBC.weighty = 0.5;
-        gBC.insets = new Insets(0, 40, 0, 400);
+        gBC.insets = new Insets(0, 40, 0, 600);
         add(processButtonPanel, gBC);
 
         processListPanel.setLayout(new GridBagLayout());
@@ -187,9 +174,6 @@ public class Process extends JPanel {
         return listButton;
     }
 
-    public JButton getStartButton() {
-        return startButton;
-    }
 
     public String getClickedProcessName() {
         return clickedProcessName;
@@ -200,7 +184,6 @@ public class Process extends JPanel {
     }
 
     private JButton listButton;
-    private JButton startButton;
     private JButton stopButton;
     private JPanel processButtonPanel;
     private JPanel processListPanel;

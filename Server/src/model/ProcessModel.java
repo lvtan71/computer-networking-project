@@ -56,16 +56,11 @@ public class ProcessModel {
                 Runtime appRuntime = Runtime.getRuntime();
                 appRuntime.exec("taskkill /PID " + IDProcess.trim());
                 notifyStopProcess = "1";
-//                notifyStopProcess = "App" + IDProcess.trim() + " has been stopped";
-                System.out.println(notifyStopProcess);
             }
             else{
                 notifyStopProcess = "0";
-//                notifyStopProcess = "There is no App with ID " + IDProcess + " is running";
-                System.out.println(notifyStopProcess);
             }
 
-            buffer = new byte[1024];
             buffer = notifyStopProcess.getBytes(StandardCharsets.UTF_8);
             outputStream.write(buffer);
 
@@ -76,7 +71,7 @@ public class ProcessModel {
         }
     }
 
-    public static boolean isRunning(String IDProcess){
+    public boolean isRunning(String IDProcess){
         try {
             Process process = Runtime.getRuntime().exec("tasklist /FI \"PID eq " + IDProcess.trim() + "\"");
 

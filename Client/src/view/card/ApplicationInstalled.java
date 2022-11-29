@@ -21,7 +21,6 @@ public class ApplicationInstalled extends JPanel {
         appButtonPanel = new JPanel();
         listButton = new JButton();
         startButton = new JButton();
-        stopButton = new JButton();
         appInstalledListPanel = new JPanel();
         appScrollPanel = new JScrollPane();
         appInstalledListTable = new JTable();
@@ -43,6 +42,7 @@ public class ApplicationInstalled extends JPanel {
 
         appButtonPanel.add(listButton, gBC);
 
+        startClicked = false;
         startButton.setBackground(new Color(40, 50, 65));
         startButton.setFont(new Font("STXihei", 0, 22)); // NOI18N
         startButton.setForeground(new Color(130, 197, 190));
@@ -56,38 +56,30 @@ public class ApplicationInstalled extends JPanel {
         gBC.weighty = 1.0;
         appButtonPanel.add(startButton, gBC);
 
-        stopButton.setBackground(new Color(40, 50, 65));
-        stopButton.setFont(new Font("STXihei", -1, 22)); // NOI18N
-        stopButton.setForeground(new Color(130, 197, 190));
-        stopButton.setText("Stop");
-        gBC = new GridBagConstraints();
-        gBC.gridx = 2;
-        gBC.gridy = 0;
-        gBC.ipadx = 60;
-        gBC.ipady = 25;
-        gBC.weightx = 0.2;
-        gBC.weighty = 1.0;
-//        gBC.insets = new Insets(0, 0, 0, 200);
-        appButtonPanel.add(stopButton, gBC);
-
         gBC = new GridBagConstraints();
         gBC.gridx = 0;
         gBC.gridy = 0;
         gBC.fill = GridBagConstraints.BOTH;
         gBC.weightx = 1;
         gBC.weighty = 0.5;
-        gBC.insets = new Insets(0, 40, 0, 400);
+        gBC.insets = new Insets(0, 40, 0, 600);
         add(appButtonPanel, gBC);
 
         appInstalledListPanel.setLayout(new java.awt.GridBagLayout());
 
-//        appInstalledListTable.setDefaultEditor(Object.class, null);
+        appInstalledListTable.setDefaultEditor(Object.class, null);
         appInstalledListTable.getTableHeader().setBackground(new java.awt.Color(40, 50, 65));
         appInstalledListTable.getTableHeader().setForeground(new java.awt.Color(255,255,255));
         appInstalledListTable.getTableHeader().setFont(new Font("STXihei", 0, 18));
         appInstalledListTable.setFont(new java.awt.Font("STXihei", 0, 16)); // NOI18N
         appInstalledListTable.setModel(new javax.swing.table.DefaultTableModel(
                 new Object [][] {
+                        { null, null},
+                        { null, null},
+                        { null, null},
+                        { null, null},
+                        { null, null},
+                        { null, null},
                         { null, null},
                         { null, null},
                         { null, null},
@@ -128,8 +120,9 @@ public class ApplicationInstalled extends JPanel {
         appInstalledListTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
+                clickedAppName = appInstalledListTable.getValueAt(appInstalledListTable.getSelectedRow(), 0).toString().trim();
                 clickedAppDirectory = appInstalledListTable.getValueAt(appInstalledListTable.getSelectedRow(), 1).toString();
-                System.out.println(clickedAppDirectory);
+                startClicked = true;
             }
         });
 
@@ -154,6 +147,14 @@ public class ApplicationInstalled extends JPanel {
         return listButton;
     }
 
+    public JButton getStartButton() {
+        return startButton;
+    }
+
+    public String getClickedAppName() {
+        return clickedAppName;
+    }
+
     public void updateAppInstalledPanel(ArrayList<ArrayList<String>> infoAppInstalled)
     {
         String[][] infoAppInstalledArray = infoAppInstalled.stream().map(u -> u.toArray(new String[0])).toArray(String[][]::new);
@@ -170,9 +171,14 @@ public class ApplicationInstalled extends JPanel {
         return clickedAppDirectory;
     }
 
+    public Boolean getStartClicked() {
+        return startClicked;
+    }
+
+
+
     private JButton listButton;
     private JButton startButton;
-    private JButton stopButton;
     private JPanel appButtonPanel;
     private JPanel appInstalledListPanel;
     private JScrollPane appScrollPanel;
@@ -181,4 +187,5 @@ public class ApplicationInstalled extends JPanel {
     private String[] headerAppInstall = {"Application", "Directory"};
     private String clickedAppName;
     private String clickedAppDirectory;
+    private Boolean startClicked;
 }

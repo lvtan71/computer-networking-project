@@ -26,7 +26,7 @@ public class Process {
         infoProcess = new ArrayList<>();
         try {
             sock.setSoTimeout(400);
-            byte[] buffer = new byte[1024];
+            byte[] buffer = new byte[128];
             inputStream.read(buffer);
             String infoLine;
             while (true) {

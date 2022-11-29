@@ -18,6 +18,8 @@ public class Home extends JFrame
     private void initComponents() {
         GridBagConstraints gBC;
 
+        shutdownButton = new JButton();
+        resetButton = new JButton();
         buttonPanel = new JPanel();
         appInstallButton = new JButton();
         appRunningButton = new JButton();
@@ -25,13 +27,14 @@ public class Home extends JFrame
         screenButton = new JButton();
         mainPanel = new JPanel();
         logButton = new JButton();
-        appInstallPanel = new ApplicationInstalled();
+        appInstalledPanel = new ApplicationInstalled();
         appRunningPanel = new ApplicationRunning();
         processPanel = new Process();
         screenPanel = new ScreenShot();
         logPanel = new Keylogger();
 
         setAutoRequestFocus(false);
+        setTitle("Remote Control");
         setBackground(new Color(255, 255, 255));
         setPreferredSize(new Dimension(1200, 700));
         getContentPane().setLayout(new GridBagLayout());
@@ -57,6 +60,7 @@ public class Home extends JFrame
         gBC.anchor = GridBagConstraints.NORTHWEST;
         gBC.weightx = 1.0;
         gBC.weighty = 0.2;
+        gBC.gridwidth = 2;
         gBC.insets = new Insets(50, 0, 0, 0);
         buttonPanel.add(appRunningButton, gBC);
 
@@ -77,6 +81,7 @@ public class Home extends JFrame
         gBC.anchor = GridBagConstraints.NORTHWEST;
         gBC.weightx = 1.0;
         gBC.weighty = 0.2;
+        gBC.gridwidth = 2;
         gBC.insets = new Insets(0, 0, 0, 0);
         buttonPanel.add(appInstallButton, gBC);
 
@@ -96,6 +101,7 @@ public class Home extends JFrame
         gBC.fill = GridBagConstraints.BOTH;
         gBC.weightx = 1.0;
         gBC.weighty = 0.2;
+        gBC.gridwidth = 2;
         buttonPanel.add(processButton, gBC);
 
         // Screenshot Button
@@ -116,6 +122,7 @@ public class Home extends JFrame
         gBC.anchor = GridBagConstraints.NORTHWEST;
         gBC.weightx = 1.0;
         gBC.weighty = 0.2;
+        gBC.gridwidth = 2;
         gBC.insets = new Insets(0, 0, 0, 0);
         buttonPanel.add(screenButton, gBC);
 
@@ -137,8 +144,43 @@ public class Home extends JFrame
         gBC.fill = GridBagConstraints.BOTH;
         gBC.weightx = 1.0;
         gBC.weighty = 0.2;
-        gBC.insets = new Insets(0, 0, 150, 0);
+        gBC.gridwidth = 2;
+        gBC.insets = new Insets(0, 0, 50, 0);
         buttonPanel.add(logButton, gBC);
+
+        // Shutdown Button
+        shutdownButton.setBackground(new Color(53, 79, 82));
+        shutdownButton.setFont(new Font("STXihei", 0, 16)); // NOI18N
+        shutdownButton.setForeground(new Color(131, 197, 190));
+        shutdownButton.setText("Shutdown");
+        shutdownButton.setBorder(null);
+        gBC = new GridBagConstraints();
+        gBC.gridx = 0;
+        gBC.gridy = 6;
+        gBC.anchor = GridBagConstraints.CENTER;
+        gBC.weightx = 1.0;
+        gBC.weighty = 0.2;
+        gBC.ipadx = 35;
+        gBC.ipady = 35;
+        gBC.insets = new Insets(0, 0, 50, 0);
+        buttonPanel.add(shutdownButton, gBC);
+
+        // Reset Button
+        resetButton.setBackground(new Color(53, 79, 82));
+        resetButton.setFont(new Font("STXihei", 0, 16)); // NOI18N
+        resetButton.setForeground(new Color(131, 197, 190));
+        resetButton.setText("Reset");
+        resetButton.setBorder(null);
+        gBC = new GridBagConstraints();
+        gBC.gridx = 1;
+        gBC.gridy = 6;
+        gBC.anchor = GridBagConstraints.CENTER;
+        gBC.weightx = 1.0;
+        gBC.weighty = 0.2;
+        gBC.ipadx = 35;
+        gBC.ipady = 35;
+        gBC.insets = new Insets(0, 0, 50, 0);
+        buttonPanel.add(resetButton, gBC);
 
         // Button Panel
         gBC = new GridBagConstraints();
@@ -151,11 +193,11 @@ public class Home extends JFrame
 
         mainPanel.setLayout(new CardLayout());
 
-        // Application Running Panel
-        mainPanel.add(appInstallPanel, "appInstallCard");
-
         // Application Install Panel
         mainPanel.add(appRunningPanel, "appRunningCard");
+
+        // Application Running Panel
+        mainPanel.add(appInstalledPanel, "appInstallCard");
 
         // Process Panel
         mainPanel.add(processPanel, "processCard");
@@ -165,7 +207,6 @@ public class Home extends JFrame
 
         // Keylogger Shot Panel
         mainPanel.add(logPanel, "logCard");
-
 
 
         gBC = new GridBagConstraints();
@@ -186,7 +227,7 @@ public class Home extends JFrame
 
     private void appRunningButtonActionPerformed(ActionEvent evt) {
         cardLayout.show(mainPanel, "appRunningCard");
-        appInstallButton.setBackground(new Color(53, 79, 82));
+        appRunningButton.setBackground(new Color(53, 79, 82));
         changeStateBackground(processButton);
         changeStateBackground(screenButton);
         changeStateBackground(logButton);
@@ -226,6 +267,7 @@ public class Home extends JFrame
         changeStateBackground(appInstallButton);
         changeStateBackground(processButton);
         changeStateBackground(screenButton);
+        changeStateBackground(appRunningButton);
     }
 
     public JButton getScreenButton() {
@@ -233,7 +275,7 @@ public class Home extends JFrame
     }
 
     public ApplicationInstalled getAppInstallPanel() {
-        return appInstallPanel;
+        return appInstalledPanel;
     }
 
     public ApplicationRunning getAppRunningPanel() {
@@ -250,6 +292,10 @@ public class Home extends JFrame
 
     public Process getProcessPanel() {
         return processPanel;
+    }
+
+    public ApplicationInstalled getAppInstalledPanel() {
+        return appInstalledPanel;
     }
 
     public void notify(String title, String notify)
@@ -274,13 +320,22 @@ public class Home extends JFrame
         notifyDialog.setModal(true);
     }
 
+    public JButton getResetButton() {
+        return resetButton;
+    }
+
+    public JButton getShutdownButton() {
+        return shutdownButton;
+    }
 
     private CardLayout cardLayout;
 
     // Variables declaration - do not modify
     private JButton appInstallButton;
     private JButton appRunningButton;
-    private ApplicationInstalled appInstallPanel;
+    private JButton shutdownButton;
+    private JButton resetButton;
+    private ApplicationInstalled appInstalledPanel;
     private ApplicationRunning appRunningPanel;
     private JPanel buttonPanel;
     private JPanel mainPanel;

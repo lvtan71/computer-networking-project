@@ -29,10 +29,10 @@ public class Application {
     public ArrayList<ArrayList<String>> listAppInstalled() {
         appInstalled = new ArrayList<>();
         try {
-            sock.setSoTimeout(3000);
-            String line;
+            sock.setSoTimeout(2000);
 
             byte[] buffer = new byte[1024];
+            String line;
             while(true)
             {
                 inputStream.read(buffer);
@@ -40,8 +40,18 @@ public class Application {
                 line = line.trim();
 
                 ArrayList<String> row = new ArrayList<String>();
-                row.add("  " + line.substring(0,66).trim());
-                row.add("  " + line.substring(66).trim());
+                int length = line.length();
+                if (length > 66)
+                {
+                    row.add("  " + line.substring(0,66).trim());
+                    row.add("  " + line.substring(66, length).trim());
+                }
+                else
+                {
+                    row.add("  " + line.substring(0, length));
+                }
+
+                System.out.println(line);
 
                 appInstalled.add(row);
             }
@@ -55,46 +65,91 @@ public class Application {
     }
 
     public ArrayList<ArrayList<String>> listAppRunning(){
-        try {
-            sock.setSoTimeout(400);
+        appRunning = new ArrayList<>();
+        try
+        {
+            sock.setSoTimeout(1500);
             byte[] buffer = new byte[1024];
-            inputStream.read(buffer); // Doc dong dau la cac truong
+            inputStream.read(buffer);
             String line;
-            while(true){
+
+            line = new String(buffer, StandardCharsets.UTF_8);
+
+            inputStream.read(buffer);
+            line = new String(buffer, StandardCharsets.UTF_8);
+            line = line.trim();
+            int pos = line.indexOf(" -- ");
+            System.out.println(line);
+            System.out.println(line.indexOf(" -- "));
+
+            while (true)
+            {
                 inputStream.read(buffer);
                 line = new String(buffer, StandardCharsets.UTF_8);
                 line = line.trim();
 
-                ArrayList<String> row = new ArrayList<String>();
-                row.add("  " + line.substring(0,21).trim());
-                row.add("  " + line.substring(21,26).trim());
-                row.add("  " + line.substring(26,100).trim());
+                ArrayList<String> row = new ArrayList<>();
+                int length = line.length();
+                if (length > pos + 3)
+                {
+                    row.add("  " + line.substring(0, pos - 2).trim());
+                    row.add("  " + line.substring(pos - 2, pos + 3).trim());
+                    row.add("  " + line.substring(pos + 3, length).trim());
+                }
+                else
+                {
+                    row.add("  " + line.substring(0, pos - 2).trim());
+                    row.add("  " + line.substring(pos - 2, length).trim());
+                    row.add("");
+                }
 
                 System.out.println(line);
                 appRunning.add(row);
             }
-        }catch (IOException ioException){
-
         }
+        catch (IOException ioE)
+        {
+            ioE.printStackTrace();
+        }
+
         return appRunning;
     }
 
-    public void stopApp(String AppID){
-        try{
-            byte[] buffer = AppID.getBytes(StandardCharsets.UTF_8);
+    public String stopAppRunning(String IDAppRunning)
+    {
+        try
+        {
+            byte[] buffer  = IDAppRunning.getBytes(StandardCharsets.UTF_8);
             outputStream.write(buffer);
-        }catch (IOException ioException) {
 
+            buffer = new byte[1024];
+            inputStream.read(buffer);
+            String notifyStatus = new String(buffer, StandardCharsets.UTF_8);
+
+            return notifyStatus.trim();
+        }
+        catch (IOException ioE)
+        {
+            return ioE.toString();
         }
     }
 
-    public void startApp(String AppLocation){
-        try{
-            byte[] buffer = AppLocation.getBytes(StandardCharsets.UTF_8);
+    public String startApp(String appDirectory){
+        try
+        {
+            byte[] buffer = appDirectory.getBytes(StandardCharsets.UTF_8);
             outputStream.write(buffer);
+
+            buffer = new byte[8];
+            inputStream.read(buffer);
+            String status = new String(buffer, StandardCharsets.UTF_8);
+
+            return status;
         }
         catch (IOException ioException){
-
+            ioException.printStackTrace();
         }
+
+        return "0";
     }
 }

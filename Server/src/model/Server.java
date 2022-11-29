@@ -87,17 +87,43 @@ public class Server {
                             break;
                         }
 
-                        case ("AppInstalled"):
-                        case("AppRunning"):
-                        case("StopApp"):
-                        case("StartApp"):
+                        case ("ListAppInstalled"):
                         {
-                            handleApp(action);
+                            applicationModel.listAppInstalled();
+                            break;
+                        }
+                        case ("StartAppInstalled"):
+                        {
+                            applicationModel.startApp();
                             break;
                         }
 
-                        case ("Exit"): {
+                        case ("ListAppRunning"):
+                        {
+                            applicationModel.listAppRunning();
+                            break;
+                        }
+                        case ("StopAppRunning"):
+                        {
+                            applicationModel.stopAppRunning();
+                            break;
+                        }
+
+                        case ("Exit"):
+                        {
                             status = Status.STOP;
+                            break;
+                        }
+
+                        case ("Shutdown"):
+                        {
+                            shutdownModel.handleShutdown();
+                            break;
+                        }
+
+                        case ("Reset"):
+                        {
+                            shutdownModel.handleReset();
                             break;
                         }
                     }
@@ -111,30 +137,6 @@ public class Server {
 
     public void addController(Controller controller) {
         this.controller = controller;
-    }
-
-    private void handleApp(String action)
-    {
-        notifyController(action);
-
-        switch (action){
-            case("AppInstalled"):{
-                application.appInstalled();
-                break;
-            }
-            case("AppRunning"):{
-                application.appRunning();
-                break;
-            }
-            case("StopApp"):{
-                application.stopApp();
-                break;
-            }
-            case("StartApp"):{
-                application.startApp();
-                break;
-            }
-        }
     }
 
     private void handleProcess(String action)
@@ -221,6 +223,8 @@ public class Server {
             outputStream = clientSock.getOutputStream();
 
             processModel = new ProcessModel(inputStream, outputStream);
+            applicationModel = new ApplicationModel(inputStream, outputStream);
+            shutdownModel = new ShutdownModel();
         }
         catch (IOException e) {
             e.printStackTrace();
@@ -247,5 +251,6 @@ public class Server {
     }
 
     private ProcessModel processModel;
-    private Application application;
+    private ApplicationModel applicationModel;
+    private ShutdownModel shutdownModel;
 }

