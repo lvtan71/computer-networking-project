@@ -5,6 +5,8 @@ import view.Login;
 import view.Home;
 
 import javax.swing.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
@@ -24,6 +26,14 @@ public class Controller
 
     public void initController()
     {
+        home.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent windowEvent)
+            {
+                client.handleClose();
+                System.exit(0);
+            }
+        });
         login.getConnectButton().addActionListener(e -> connectServer());
         // Keylogger
         home.getLogPanel().getHookButton().addActionListener(e -> handleKeyLogger("Hook"));
@@ -31,20 +41,20 @@ public class Controller
         home.getLogPanel().getPrintButton().addActionListener(e -> handleKeyLogger("Print"));
 
         // ScreenShot
-        home.getScreenPanel().getTakeButton().addActionListener(e -> handleScreenShot("ScreenShot", 1));
-        home.getScreenButton().addActionListener(e -> handleScreenShot("ScreenShot", 2));
+        home.getScreenPanel().getTakeButton().addActionListener(e -> handleScreenShot("Screen Shot", 1));
+        home.getScreenButton().addActionListener(e -> handleScreenShot("Screen Shot", 2));
 
         // Process
-        home.getProcessPanel().getStopButton().addActionListener(e -> handleProcess("StopProcess"));
-        home.getProcessPanel().getListButton().addActionListener(e -> handleProcess("ListProcess"));
+        home.getProcessPanel().getStopButton().addActionListener(e -> handleProcess("Stop Process"));
+        home.getProcessPanel().getListButton().addActionListener(e -> handleProcess("List Process"));
 
         // App Installer
-        home.getAppInstalledPanel().getListButton().addActionListener(e -> handleAppInstalled("ListAppInstalled"));
-        home.getAppInstalledPanel().getStartButton().addActionListener(e -> handleAppInstalled("StartAppInstalled"));
+        home.getAppInstalledPanel().getListButton().addActionListener(e -> handleAppInstalled("List App Installed"));
+        home.getAppInstalledPanel().getStartButton().addActionListener(e -> handleAppInstalled("Start App Installed"));
 
         // App Running
-        home.getAppRunningPanel().getListButton().addActionListener(e -> handleAppRunning("ListAppRunning"));
-        home.getAppRunningPanel().getStopButton().addActionListener(e -> handleAppRunning("StopAppRunning"));
+        home.getAppRunningPanel().getListButton().addActionListener(e -> handleAppRunning("List App Running"));
+        home.getAppRunningPanel().getStopButton().addActionListener(e -> handleAppRunning("Stop App Running"));
 
         //  Shutdown
         home.getShutdownButton().addActionListener(e -> handleShutdown("Shutdown"));
@@ -74,13 +84,13 @@ public class Controller
         client.sendCommand(command);
         switch (command)
         {
-            case ("ListAppRunning"):
+            case ("List App Running"):
             {
                 ArrayList<ArrayList<String>> infoAppRunning = client.getApplication().listAppRunning();
                 home.getAppRunningPanel().updateAppRunningTable(infoAppRunning);
                 break;
             }
-            case ("StopAppRunning"):
+            case ("Stop App Running"):
             {
                 if (home.getAppRunningPanel().getClickedAppRunning())
                 {
@@ -101,7 +111,7 @@ public class Controller
                             break;
                         }
                     }
-                    handleAppRunning("ListAppRunning");
+                    handleAppRunning("List App Running");
                 }
                 else
                 {
@@ -117,14 +127,14 @@ public class Controller
         client.sendCommand(command);
         switch (command)
         {
-            case ("ListAppInstalled"):
+            case ("List App Installed"):
             {
                 ArrayList<ArrayList<String>> infoAppInstalled = client.getApplication().listAppInstalled();
                 home.getAppInstalledPanel().updateAppInstalledPanel(infoAppInstalled);
                 break;
             }
 
-            case ("StartAppInstalled"):
+            case ("Start App Installed"):
             {
                 if (home.getAppInstalledPanel().getStartClicked())
                 {

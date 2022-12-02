@@ -68,7 +68,7 @@ public class Application {
         appRunning = new ArrayList<>();
         try
         {
-            sock.setSoTimeout(1500);
+            sock.setSoTimeout(3000);
             byte[] buffer = new byte[1024];
             inputStream.read(buffer);
             String line;
@@ -79,8 +79,8 @@ public class Application {
             line = new String(buffer, StandardCharsets.UTF_8);
             line = line.trim();
             int pos = line.indexOf(" -- ");
-            System.out.println(line);
-            System.out.println(line.indexOf(" -- "));
+//            System.out.println(line);
+//            System.out.println(line.indexOf(" -- "));
 
             while (true)
             {

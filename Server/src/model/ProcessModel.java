@@ -31,11 +31,22 @@ public class ProcessModel {
             String line;
             while((line = processReader.readLine()) != null)
             {
+                try
+                {
+                    Thread.sleep(50);
+                }
+                catch (Exception e)
+                {
+                   //
+                }
+
                 System.out.println();
                 System.out.println();
                 buffer = line.getBytes(StandardCharsets.UTF_8);
                 outputStream.write(buffer);
             }
+
+            processReader.close();
         }
         catch (IOException ioE)
         {

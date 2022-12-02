@@ -1,15 +1,14 @@
 import model.Server;
-import view.Terminal;
+import view.Home;
 import controller.Controller;
+
+import java.net.UnknownHostException;
 
 public class App
 {
-    public static void main(String[] args)
-    {
-        Server server = new Server(9998, 5);
-        Terminal terminal = new Terminal();
-        Controller controller = new Controller(server, terminal);
-
-        controller.start();
+    public static void main(String[] args) throws UnknownHostException {
+        Server server = new Server();
+        Home home = new Home();
+        Controller controller = new Controller(server, home);
     }
 }

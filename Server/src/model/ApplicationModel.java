@@ -45,7 +45,7 @@ public class ApplicationModel {
 
                 try
                 {
-                    Thread.sleep(1);
+                    Thread.sleep(100);
                 }
                 catch (InterruptedException iE)
                 {
@@ -59,8 +59,10 @@ public class ApplicationModel {
                 line.trim();
                 byte[] buffer = line.getBytes(StandardCharsets.UTF_8);
                 outputStream.write(buffer);
-                System.out.println(line);
+//                System.out.println(line);
             }
+
+            bufferedReader.close();
         }
         catch (IOException ioE){
             ioE.printStackTrace();
@@ -84,7 +86,7 @@ public class ApplicationModel {
             {
                 try
                 {
-                    Thread.sleep(1);
+                    Thread.sleep(50);
                 }
                 catch (InterruptedException iE)
                 {
@@ -93,14 +95,14 @@ public class ApplicationModel {
 
                 buffer = line.getBytes(StandardCharsets.UTF_8);
                 outputStream.write(buffer);
-                System.out.println(line);
             }
+
+            bufferedReader.close();
         }
         catch (IOException ioException)
         {
             ioException.printStackTrace();
         }
-
     }
 
 
@@ -125,7 +127,6 @@ public class ApplicationModel {
 
             buffer = notifyStopProcess.getBytes(StandardCharsets.UTF_8);
             outputStream.write(buffer);
-
         }
         catch (Exception e)
         {
@@ -168,7 +169,7 @@ public class ApplicationModel {
             buffer = "1".getBytes(StandardCharsets.UTF_8);
             outputStream.write(buffer);
 
-            System.out.println(new String(buffer, StandardCharsets.UTF_8));
+//            System.out.println(new String(buffer, StandardCharsets.UTF_8));
         }
         catch (IOException ioException){
             try

@@ -46,6 +46,11 @@ public class Client
         this.IP = IP;
     }
 
+    public void handleClose()
+    {
+        sendCommand("Close Connection");
+    }
+
     public BufferedImage handleScreenShot(String command)
     {
         sendCommand(command);
@@ -91,7 +96,7 @@ public class Client
     {
         try
         {
-            byte[] msg = command.getBytes();
+            byte[] msg = command.trim().getBytes();
             outputStream.write(msg);
         }
         catch (IOException ioE)
